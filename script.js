@@ -3717,7 +3717,7 @@ var UICore = {
 
   _initFont: function() {
     var s = Storage.get(Config.STORAGE_KEYS.SETTINGS, {});
-    this._fontLevel = s.fontLevel || 3;
+    this._fontLevel = s.fontLevel || 5;
     this._applyFont();
     var self = this;
     U.onClick('font-decrease', function() {
@@ -3725,7 +3725,7 @@ var UICore = {
       self._applyFont(); self._saveFont();
     });
     U.onClick('font-increase', function() {
-      self._fontLevel = Math.min(6, self._fontLevel + 1);
+      self._fontLevel = Math.min(9, self._fontLevel + 1);
       self._applyFont(); self._saveFont();
     });
   },
