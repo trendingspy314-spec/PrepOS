@@ -2705,6 +2705,42 @@ var ReviewEngine = {
     this._applyFilter();
     this._renderPalette();
     this._renderQuestion(0);
+     
+  _injectReviewBottomBar: function() {
+    var old = U.el('rev-bottom-fixed');
+    if (old) old.parentNode.removeChild(old);
+
+    var bar = document.createElement('div');
+    bar.id = 'rev-bottom-fixed';
+    bar.className = 'rev-bottom-fixed';
+    bar.innerHTML =
+      '<div class="rev-bottom-grid">' +
+      '<button class="rev-bottom-btn" id="rbb-prev"><span class="rbb-icon">◀</span><span class="rbb-text">Prev</span></button>' +
+      '<button class="rev-bottom-btn rbb-back" id="rbb-back"><span class="rbb-icon">↩</span><span class="rbb-text">Back</span></button>' +
+      '<button class="rev-bottom-btn" id="rbb-next"><span class="rbb-icon">▶</span><span class="rbb-text">Next</span></button>' +
+      '</div>';
+    document.body.appendChild(bar);
+
+    var botNav = U.q('.bottom-nav');
+    if (botNav) botNav.classList.add('exam-active');
+
+    var self = this;
+    U.onClick('rbb-prev', function() { self.navigate(-1); });
+    U.onClick('rbb-next', function() { self.navigate(1); });
+    U.onClick('rbb-back', function() {
+      var bb = U.el('rev-bottom-fixed');
+      if (bb) bb.parentNode.removeChild(bb);
+      var bn = U.q('.bottom-nav');
+      if (bn) bn.classList.remove('exam-active');
+      var pw = U.el('rev-pal-wrapper');
+      if (pw) pw.parentNode.removeChild(pw);
+      var palEl = U.el('review-palette');
+      if (palEl) palEl.style.display = '';
+      var r = ResultEngine.getLast();
+      if (r) { ResultEngine.render(r); UICore.switchView(Config.VIEWS.RESULT); }
+      else UICore.switchView(Config.VIEWS.HOME);
+    });
+  },
   },
 
 
@@ -2768,18 +2804,49 @@ var ReviewEngine = {
     if (!palEl) return;
     if (!this._list.length) { palEl.innerHTML = ''; return; }
 
+    // Count stats
+    var correctCount = 0, wrongCount = 0, skipCount = 0, markCount = 0;
+    for (var s = 0; s < this._list.length; s++) {
+      if (this._list[s].isCorrect) correctCount++;
+      else if (this._list[s].isWrong) wrongCount++;
+      else skipCount++;
+      if (this._list[s].isMarked) markCount++;
+    }
+
+    // Wrap palette with stats
+    var wrapEl = palEl.parentNode;
+    var existingWrap = U.el('rev-pal-wrapper');
+    if (existingWrap) existingWrap.parentNode.removeChild(existingWrap);
+
+    var wrapper = document.createElement('div');
+    wrapper.id = 'rev-pal-wrapper';
+    wrapper.className = 'rev-pal-wrap';
+    wrapper.innerHTML =
+      '<div class="rev-pal-stats">' +
+      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-c"></span>' + correctCount + ' Correct</span>' +
+      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-w"></span>' + wrongCount + ' Wrong</span>' +
+      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-s"></span>' + skipCount + ' Skip</span>' +
+      (markCount > 0 ? '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-m"></span>' + markCount + ' Marked</span>' : '') +
+      '</div>' +
+      '<div id="rev-pal-grid" class="rev-pal"></div>';
+
+    if (wrapEl) wrapEl.insertBefore(wrapper, palEl);
+    palEl.style.display = 'none';
+
+    var gridEl = U.el('rev-pal-grid');
+    if (!gridEl) return;
 
     var html = '';
     for (var i = 0; i < this._list.length; i++) {
       var d = this._list[i];
-      var cls = 'pal-btn ' + (d.isCorrect ? 'pal-a' : d.isWrong ? 'pal-na' : 'pal-m');
+      var cls = 'pal-btn ' + (d.isCorrect ? 'pal-a' : d.isWrong ? 'pal-na' : '');
+      if (d.isMarked && !d.isCorrect && !d.isWrong) cls = 'pal-btn pal-m';
       html += '<button class="' + cls + '" data-ri="' + i + '">' + (d.index + 1) + '</button>';
     }
-    palEl.innerHTML = html;
-
+    gridEl.innerHTML = html;
 
     var self = this;
-    var btns = U.qa('.pal-btn', palEl);
+    var btns = U.qa('.pal-btn', gridEl);
     for (var j = 0; j < btns.length; j++) {
       (function(b) {
         b.addEventListener('click', function() {
@@ -2789,14 +2856,25 @@ var ReviewEngine = {
       })(btns[j]);
     }
     this._highlightPalette(0);
+
+    // Inject mobile bottom bar
+    this._injectReviewBottomBar();
   },
 
 
-  _highlightPalette: function(active) {
+   _highlightPalette: function(active) {
     var btns = U.qa('#review-palette .pal-btn');
     for (var i = 0; i < btns.length; i++) {
       if (i === active) btns[i].classList.add('pal-cur');
       else btns[i].classList.remove('pal-cur');
+    }
+    var gridBtns = U.qa('#rev-pal-grid .pal-btn');
+    for (var j = 0; j < gridBtns.length; j++) {
+      if (j === active) {
+        gridBtns[j].classList.add('pal-cur');
+        gridBtns[j].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      else gridBtns[j].classList.remove('pal-cur');
     }
   },
 
