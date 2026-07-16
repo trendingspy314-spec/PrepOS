@@ -1,44 +1,4 @@
-﻿'use strict';
-// ═══════════════════════════════════════════════════════════
-// MOBILE / OLD BROWSER COMPAT SHIM
-// Safe polyfills — non-breaking
-// ═══════════════════════════════════════════════════════════
-(function() {
-  if (!Object.values) {
-    Object.values = function(obj) {
-      var out = [];
-      for (var k in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, k)) out.push(obj[k]);
-      }
-      return out;
-    };
-  }
-
-  if (!String.prototype.padStart) {
-    String.prototype.padStart = function(targetLength, padString) {
-      targetLength = targetLength >> 0;
-      padString = String(typeof padString !== 'undefined' ? padString : ' ');
-      if (this.length >= targetLength) return String(this);
-      targetLength = targetLength - this.length;
-      if (targetLength > padString.length) {
-        padString += new Array(targetLength / padString.length + 1).join(padString);
-      }
-      return padString.slice(0, targetLength) + String(this);
-    };
-  }
-
-  if (!Math.log10) {
-    Math.log10 = function(x) {
-      return Math.log(x) / Math.LN10;
-    };
-  }
-
-  if (!Array.isArray) {
-    Array.isArray = function(arg) {
-      return Object.prototype.toString.call(arg) === '[object Array]';
-    };
-  }
-})();
+'use strict';
 /* ╔═══════════════════════════════════════════════════════════════╗
    ║  PrepOS v3.0 — SIMPRA EDTECH                                 ║
    ║  The AI Exam Operating System                                ║
@@ -2158,26 +2118,7 @@ var ExamEngine = {
   // ── MOBILE PALETTE ──
   _injectMobilePalette: function() {
     this._removeMobilePalette();
-    // ── Fixed Bottom Bar ──
-    var bottomBar = document.createElement('div');
-    bottomBar.id = 'exam-bottom-fixed';
-    bottomBar.className = 'exam-bottom-fixed';
-    bottomBar.innerHTML =
-      '<div class="exam-bottom-grid">' +
-      '<button class="exam-bottom-btn" id="ebb-prev"><span class="ebb-icon">◀</span><span class="ebb-text">Prev</span></button>' +
-      '<button class="exam-bottom-btn ebb-mark" id="ebb-mark"><span class="ebb-icon">☆</span><span class="ebb-text">Mark</span></button>' +
-      '<button class="exam-bottom-btn" id="ebb-next"><span class="ebb-icon">▶</span><span class="ebb-text">Next</span></button>' +
-      '</div>';
-    document.body.appendChild(bottomBar);
 
-    // Hide regular bottom nav during exam
-    var botNav = U.q('.bottom-nav');
-    if (botNav) botNav.classList.add('exam-active');
-
-    var self = this;
-    U.onClick('ebb-prev', function() { self.prev(); });
-    U.onClick('ebb-next', function() { self.next(); });
-    U.onClick('ebb-mark', function() { self.toggleMark(); self._updateBottomMark(); });
 
     var fab = document.createElement('button');
     fab.id = 'exam-pal-fab';
@@ -2222,17 +2163,13 @@ var ExamEngine = {
   },
 
 
-   _removeMobilePalette: function() {
+  _removeMobilePalette: function() {
     var fab = U.el('exam-pal-fab');
     if (fab) fab.parentNode.removeChild(fab);
     var ov = U.el('exam-pal-overlay');
     if (ov) ov.parentNode.removeChild(ov);
-    var bb = U.el('exam-bottom-fixed');
-    if (bb) bb.parentNode.removeChild(bb);
-    // Restore bottom nav
-    var botNav = U.q('.bottom-nav');
-    if (botNav) botNav.classList.remove('exam-active');
   },
+
 
   _toggleSheet: function() {
     var ov = U.el('exam-pal-overlay');
@@ -2425,38 +2362,23 @@ var ExamEngine = {
 
 
   _renderMarkButton: function() {
-      _updateBottomMark: function() {
     if (!this._session) return;
     var q = this._session.questions[this._session.currentIndex];
-    var btn = U.el('ebb-mark');
+    var btn = U.el('exam-mark');
     if (!btn || !q) return;
     var marked = this._session.marked.indexOf(q.id) !== -1;
-    var icon = btn.querySelector('.ebb-icon');
-    var text = btn.querySelector('.ebb-text');
-    if (icon) icon.textContent = marked ? '★' : '☆';
-    if (text) text.textContent = marked ? 'Marked' : 'Mark';
-    if (marked) btn.classList.add('ebb-marked');
-    else btn.classList.remove('ebb-marked');     // Sync bottom bar mark button
-    this._updateBottomMark();
+    btn.textContent = marked ? '★ Marked' : '☆ Mark';
+    if (marked) btn.classList.add('btn-marked');
+    else btn.classList.remove('btn-marked');
   },
 
 
-   _renderNavButtons: function() {
+  _renderNavButtons: function() {
     if (!this._session) return;
-    var isFirst = this._session.currentIndex === 0;
-    var isLast = this._session.currentIndex === this._session.questions.length - 1;
-
-    // Desktop buttons
     var prev = U.el('exam-prev');
     var next = U.el('exam-next');
-    if (prev) prev.disabled = isFirst;
-    if (next) next.disabled = isLast;
-
-    // Mobile bottom bar buttons
-    var ePrev = U.el('ebb-prev');
-    var eNext = U.el('ebb-next');
-    if (ePrev) { ePrev.disabled = isFirst; ePrev.style.opacity = isFirst ? '0.4' : '1'; }
-    if (eNext) { eNext.disabled = isLast; eNext.style.opacity = isLast ? '0.4' : '1'; }
+    if (prev) prev.disabled = this._session.currentIndex === 0;
+    if (next) next.disabled = this._session.currentIndex === this._session.questions.length - 1;
   }
 };
 
@@ -3642,7 +3564,7 @@ var UICore = {
   },
 
 
-     _initSplash: function() {
+  _initSplash: function() {
     var logo = U.el('sp-logo');
     if (logo) logo.innerHTML = Logo.svg(64);
     setTimeout(function() {
@@ -3653,11 +3575,6 @@ var UICore = {
       }
       var app = U.el('app');
       if (app) app.classList.remove('hidden');
-
-      if (window.__preposSplashFallback) {
-        clearTimeout(window.__preposSplashFallback);
-        window.__preposSplashFallback = null;
-      }
     }, 1800);
   },
 
@@ -5364,10 +5281,8 @@ var App = {
     if (State.isDisabled(moduleName)) return;
     try {
       fn();
-       } catch(e) {
-      Kernel.log('error', 'App', 'BOOT FAILED: ' + e.message);
-      this._renderCrashScreen(e.message + ' | Line: ' + (e.stack || '').slice(0, 200));
-    }
+    } catch(e) {
+      Kernel.log('error', 'App.safe[' + moduleName + ']', e.message);
       State.disable(moduleName);
       UICore.toast(moduleName + ' error — disabled.', 'warning', 3000);
     }
@@ -5754,9 +5669,17 @@ var App = {
   // PWA SERVICE WORKER
   // ═══════════════════════════════════════════════════════
   _registerSW: function() {
-    // Temporary disabled for mobile stability.
-    // We will re-enable after mobile build is fully stable.
-    return;
+    if ('serviceWorker' in navigator) {
+      try {
+        navigator.serviceWorker.register('sw.js').then(function(reg) {
+          Kernel.log('info', 'PWA', 'SW registered: ' + reg.scope);
+        }).catch(function(err) {
+          Kernel.log('warn', 'PWA', 'SW registration failed: ' + err.message);
+        });
+      } catch(e) {
+        Kernel.log('warn', 'PWA', 'SW not supported: ' + e.message);
+      }
+    }
   }
 };
 
