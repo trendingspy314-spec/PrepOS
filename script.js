@@ -929,15 +929,15 @@ var AIManager = {
 
 
   // ── PROMPT LIBRARY ──
-    explain: function(question, correctAns, topic, callback) {
+  explain: function(question, correctAns, topic, callback) {
     var prompt = PromptLibrary.get('explain', { question: question, answer: correctAns, topic: topic });
-    this.call(prompt, { maxTokens: 1500, temperature: 0.25, cacheType: 'explain' }, callback);
+    this.call(prompt, { maxTokens: 600, temperature: 0.2, cacheType: 'explain' }, callback);
   },
 
 
-   generateSimilar: function(question, topic, callback) {
+  generateSimilar: function(question, topic, callback) {
     var prompt = PromptLibrary.get('similar', { question: question, topic: topic });
-    this.call(prompt, { maxTokens: 3000, temperature: 0.5, noCache: true }, callback);
+    this.call(prompt, { maxTokens: 1024, temperature: 0.5, noCache: true }, callback);
   },
 
 
@@ -1022,74 +1022,38 @@ var PromptLibrary = {
     var self = this;
 
 
-       self._prompts.explain = {
-      v: '2.0', type: 'explain',
+    self._prompts.explain = {
+      v: '1.0', type: 'explain',
       template: function(p) {
-        return 'You are AI Baba — India\'s most legendary competitive exam teacher (IAS/UPSC/Engineering level).\n' +
-          'Language: Natural Hinglish (Hindi sentence structure, English technical terms).\n' +
-          'Style: Like a senior faculty who breaks down everything from scratch — UPSC Mains answer quality.\n\n' +
+        return 'You are AI Baba — a legendary Indian competitive exam teacher.\n' +
+          'Language: Natural Hinglish. Technical terms always in English.\n\n' +
           'Question: ' + p.question + '\n' +
           'Correct Answer: ' + (p.answer || 'Not available') + '\n' +
           'Topic: ' + (p.topic || 'General') + '\n\n' +
-          'Give a COMPLETE, STRUCTURED explanation in this EXACT format:\n\n' +
-          '## 🎯 CONCEPT OVERVIEW\n' +
-          'Explain the core concept in 3-4 lines. What is this topic about? Why does it matter?\n\n' +
-          '## ✅ CORRECT ANSWER ANALYSIS\n' +
-          'Why is this the correct answer? Break it down step by step.\n' +
-          '- Step 1: [First principle/observation]\n' +
-          '- Step 2: [Apply formula/logic]\n' +
-          '- Step 3: [Arrive at answer]\n\n' +
-          '## ❌ WHY OTHER OPTIONS ARE WRONG\n' +
-          'Analyze each wrong option briefly:\n' +
-          '- Option X: Why wrong (1 line)\n' +
-          '- Option Y: Why wrong (1 line)\n\n' +
-          '## 📐 FORMULA / THEORY\n' +
-          'All relevant formulas, definitions, theorems. If numerical — show complete calculation.\n\n' +
-          '## 🧠 MEMORY TRICK\n' +
-          'A desi mnemonic, shortcut, or pattern to remember forever.\n\n' +
-          '## ⚡ EXAM SHORTCUT\n' +
-          'How to solve this in 30 seconds during exam. Quick elimination technique.\n\n' +
-          '## ⚠️ COMMON MISTAKES\n' +
-          'Top 2-3 mistakes students make in this type of question.\n\n' +
-          '## 📊 PYQ PATTERN\n' +
-          'How this concept appears in SSC/UPSC/GATE/Railway exams. Frequency and variations.\n\n' +
-          '## 🔗 CONNECTED CONCEPTS\n' +
-          'Related topics student should also revise (2-3 topics with 1-line each).\n\n' +
-          '## 💡 FINAL TAKEAWAY\n' +
-          'One powerful line that summarizes everything.\n\n' +
-          'RULES:\n' +
-          '- Be thorough but structured\n' +
-          '- Use bullet points and numbered lists\n' +
-          '- Every section must have real content (no filler)\n' +
-          '- Hinglish naturally — jaise class mein padhate ho\n' +
-          '- If numerical: show COMPLETE step-by-step calculation\n' +
-          '- Target: 400-500 words (quality over brevity)';
+          'Explain in this EXACT format (no extra text):\n' +
+          '**Concept:** [1 line concept]\n' +
+          '**Why This:** [Simple reason]\n' +
+          '**Formula:** [Formula if applicable, else skip]\n' +
+          '**Logic:** [Step-by-step reasoning]\n' +
+          '**Shortcut:** [Quick exam trick]\n' +
+          '**Common Mistake:** [What students do wrong]\n' +
+          '**Memory Trick:** [Easy to remember]\n' +
+          '**PYQ Pattern:** [How this appears in exams]\n' +
+          '**Final Takeaway:** [1 line summary]\n\n' +
+          'Max 200 words. Be concise. Exam-focused.';
       }
     };
 
-       self._prompts.similar = {
-      v: '2.0', type: 'generate',
+
+    self._prompts.similar = {
+      v: '1.0', type: 'generate',
       template: function(p) {
-        return 'Generate exactly 10 high-quality MCQ questions on: ' + (p.topic || 'General') + '\n' +
-          'Reference question style: ' + p.question + '\n\n' +
-          'RULES:\n' +
-          '- All 10 questions must be UNIQUE concepts within same topic\n' +
-          '- Mix of Easy (3), Medium (4), Hard (3) difficulty\n' +
-          '- Include: Conceptual, Numerical, Application-based variety\n' +
-          '- Authentic exam quality (SSC/UPSC/GATE level)\n' +
-          '- Each question must test a DIFFERENT sub-concept\n' +
-          '- No repeated ideas or similar patterns\n' +
-          '- Options should be realistic and tricky\n\n' +
-          'Format EXACTLY for each:\n' +
-          '1. [Question]\n' +
-          '(A) [Option]\n' +
-          '(B) [Option]\n' +
-          '(C) [Option]\n' +
-          '(D) [Option]\n' +
-          'Answer: [Letter]\n' +
-          'One Line Logic: [Clear 1-line explanation]\n' +
-          'Difficulty: [Easy/Medium/Hard]\n\n' +
-          'Generate all 10 questions now:';
+        return 'Generate 3 similar MCQ questions on: ' + (p.topic || 'General') + '\n' +
+          'Reference question: ' + p.question + '\n\n' +
+          'RULES:\n- Different concepts but same topic\n- Exam quality\n- No duplicate ideas\n\n' +
+          'Format EXACTLY:\n1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\n' +
+          'Answer: [Letter]\nOne Line Logic: [Brief]\n\n' +
+          'Generate 3 questions now.';
       }
     };
 
@@ -2155,29 +2119,7 @@ var ExamEngine = {
   _injectMobilePalette: function() {
     this._removeMobilePalette();
 
-       // ── Fixed Bottom Bar — 5 Buttons ──
-    var bottomBar = document.createElement('div');
-    bottomBar.id = 'exam-bottom-fixed';
-    bottomBar.className = 'exam-bottom-fixed';
-    bottomBar.innerHTML =
-      '<div class="exam-bottom-grid-5">' +
-      '<button class="exam-bottom-btn" id="ebb-prev"><span class="ebb-icon">◀</span><span class="ebb-text">Prev</span></button>' +
-      '<button class="exam-bottom-btn ebb-clear" id="ebb-clear"><span class="ebb-icon">✕</span><span class="ebb-text">Clear</span></button>' +
-      '<button class="exam-bottom-btn ebb-mark" id="ebb-mark"><span class="ebb-icon">☆</span><span class="ebb-text">Mark</span></button>' +
-      '<button class="exam-bottom-btn ebb-submit" id="ebb-submit"><span class="ebb-icon">✓</span><span class="ebb-text">Submit</span></button>' +
-      '<button class="exam-bottom-btn" id="ebb-next"><span class="ebb-icon">▶</span><span class="ebb-text">Next</span></button>' +
-      '</div>';
-    document.body.appendChild(bottomBar);
 
-    var botNav = U.q('.bottom-nav');
-    if (botNav) botNav.classList.add('exam-active');
-
-    var self2 = this;
-    U.onClick('ebb-prev', function() { self2.prev(); });
-    U.onClick('ebb-next', function() { self2.next(); });
-    U.onClick('ebb-clear', function() { self2.clearResponse(); });
-    U.onClick('ebb-mark', function() { self2.toggleMark(); self2._updateBottomMark(); });
-    U.onClick('ebb-submit', function() { self2.requestSubmit(); });
     var fab = document.createElement('button');
     fab.id = 'exam-pal-fab';
     fab.className = 'exam-pal-fab';
@@ -2221,15 +2163,11 @@ var ExamEngine = {
   },
 
 
-   _removeMobilePalette: function() {
+  _removeMobilePalette: function() {
     var fab = U.el('exam-pal-fab');
     if (fab) fab.parentNode.removeChild(fab);
     var ov = U.el('exam-pal-overlay');
     if (ov) ov.parentNode.removeChild(ov);
-    var bb = U.el('exam-bottom-fixed');
-    if (bb) bb.parentNode.removeChild(bb);
-    var botNav = U.q('.bottom-nav');
-    if (botNav) botNav.classList.remove('exam-active');
   },
 
 
@@ -2423,7 +2361,7 @@ var ExamEngine = {
   },
 
 
-   _renderMarkButton: function() {
+  _renderMarkButton: function() {
     if (!this._session) return;
     var q = this._session.questions[this._session.currentIndex];
     var btn = U.el('exam-mark');
@@ -2432,36 +2370,15 @@ var ExamEngine = {
     btn.textContent = marked ? '★ Marked' : '☆ Mark';
     if (marked) btn.classList.add('btn-marked');
     else btn.classList.remove('btn-marked');
-    this._updateBottomMark();
-  },
-
-  _updateBottomMark: function() {
-    if (!this._session) return;
-    var q = this._session.questions[this._session.currentIndex];
-    var btn = U.el('ebb-mark');
-    if (!btn || !q) return;
-    var marked = this._session.marked.indexOf(q.id) !== -1;
-    var icon = btn.querySelector('.ebb-icon');
-    var text = btn.querySelector('.ebb-text');
-    if (icon) icon.textContent = marked ? '★' : '☆';
-    if (text) text.textContent = marked ? 'Marked' : 'Mark';
-    if (marked) btn.classList.add('ebb-marked');
-    else btn.classList.remove('ebb-marked');
   },
 
 
-   _renderNavButtons: function() {
+  _renderNavButtons: function() {
     if (!this._session) return;
-    var isFirst = this._session.currentIndex === 0;
-    var isLast = this._session.currentIndex === this._session.questions.length - 1;
     var prev = U.el('exam-prev');
     var next = U.el('exam-next');
-    if (prev) prev.disabled = isFirst;
-    if (next) next.disabled = isLast;
-    var ePrev = U.el('ebb-prev');
-    var eNext = U.el('ebb-next');
-    if (ePrev) { ePrev.disabled = isFirst; ePrev.style.opacity = isFirst ? '0.4' : '1'; }
-    if (eNext) { eNext.disabled = isLast; eNext.style.opacity = isLast ? '0.4' : '1'; }
+    if (prev) prev.disabled = this._session.currentIndex === 0;
+    if (next) next.disabled = this._session.currentIndex === this._session.questions.length - 1;
   }
 };
 
@@ -2741,42 +2658,6 @@ var ReviewEngine = {
     this._applyFilter();
     this._renderPalette();
     this._renderQuestion(0);
-     
-  _injectReviewBottomBar: function() {
-    var old = U.el('rev-bottom-fixed');
-    if (old) old.parentNode.removeChild(old);
-
-    var bar = document.createElement('div');
-    bar.id = 'rev-bottom-fixed';
-    bar.className = 'rev-bottom-fixed';
-    bar.innerHTML =
-      '<div class="rev-bottom-grid">' +
-           '<button class="rev-bottom-btn rbb-prev" id="rbb-prev"><span class="rbb-icon">◀</span><span class="rbb-text">Prev</span></button>' +
-      '<button class="rev-bottom-btn rbb-back" id="rbb-back"><span class="rbb-icon">↩</span><span class="rbb-text">Back</span></button>' +
-      '<button class="rev-bottom-btn rbb-next" id="rbb-next"><span class="rbb-icon">▶</span><span class="rbb-text">Next</span></button>' +
-      '</div>';
-    document.body.appendChild(bar);
-
-    var botNav = U.q('.bottom-nav');
-    if (botNav) botNav.classList.add('exam-active');
-
-    var self = this;
-    U.onClick('rbb-prev', function() { self.navigate(-1); });
-    U.onClick('rbb-next', function() { self.navigate(1); });
-    U.onClick('rbb-back', function() {
-      var bb = U.el('rev-bottom-fixed');
-      if (bb) bb.parentNode.removeChild(bb);
-      var bn = U.q('.bottom-nav');
-      if (bn) bn.classList.remove('exam-active');
-      var pw = U.el('rev-pal-wrapper');
-      if (pw) pw.parentNode.removeChild(pw);
-      var palEl = U.el('review-palette');
-      if (palEl) palEl.style.display = '';
-      var r = ResultEngine.getLast();
-      if (r) { ResultEngine.render(r); UICore.switchView(Config.VIEWS.RESULT); }
-      else UICore.switchView(Config.VIEWS.HOME);
-    });
-  },
   },
 
 
@@ -2840,49 +2721,18 @@ var ReviewEngine = {
     if (!palEl) return;
     if (!this._list.length) { palEl.innerHTML = ''; return; }
 
-    // Count stats
-    var correctCount = 0, wrongCount = 0, skipCount = 0, markCount = 0;
-    for (var s = 0; s < this._list.length; s++) {
-      if (this._list[s].isCorrect) correctCount++;
-      else if (this._list[s].isWrong) wrongCount++;
-      else skipCount++;
-      if (this._list[s].isMarked) markCount++;
-    }
-
-    // Wrap palette with stats
-    var wrapEl = palEl.parentNode;
-    var existingWrap = U.el('rev-pal-wrapper');
-    if (existingWrap) existingWrap.parentNode.removeChild(existingWrap);
-
-    var wrapper = document.createElement('div');
-    wrapper.id = 'rev-pal-wrapper';
-    wrapper.className = 'rev-pal-wrap';
-    wrapper.innerHTML =
-      '<div class="rev-pal-stats">' +
-      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-c"></span>' + correctCount + ' Correct</span>' +
-      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-w"></span>' + wrongCount + ' Wrong</span>' +
-      '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-s"></span>' + skipCount + ' Skip</span>' +
-      (markCount > 0 ? '<span class="rev-pal-stat"><span class="rev-pal-dot rpd-m"></span>' + markCount + ' Marked</span>' : '') +
-      '</div>' +
-      '<div id="rev-pal-grid" class="rev-pal"></div>';
-
-    if (wrapEl) wrapEl.insertBefore(wrapper, palEl);
-    palEl.style.display = 'none';
-
-    var gridEl = U.el('rev-pal-grid');
-    if (!gridEl) return;
 
     var html = '';
     for (var i = 0; i < this._list.length; i++) {
       var d = this._list[i];
-      var cls = 'pal-btn ' + (d.isCorrect ? 'pal-a' : d.isWrong ? 'pal-na' : '');
-      if (d.isMarked && !d.isCorrect && !d.isWrong) cls = 'pal-btn pal-m';
+      var cls = 'pal-btn ' + (d.isCorrect ? 'pal-a' : d.isWrong ? 'pal-na' : 'pal-m');
       html += '<button class="' + cls + '" data-ri="' + i + '">' + (d.index + 1) + '</button>';
     }
-    gridEl.innerHTML = html;
+    palEl.innerHTML = html;
+
 
     var self = this;
-    var btns = U.qa('.pal-btn', gridEl);
+    var btns = U.qa('.pal-btn', palEl);
     for (var j = 0; j < btns.length; j++) {
       (function(b) {
         b.addEventListener('click', function() {
@@ -2892,25 +2742,14 @@ var ReviewEngine = {
       })(btns[j]);
     }
     this._highlightPalette(0);
-
-    // Inject mobile bottom bar
-    this._injectReviewBottomBar();
   },
 
 
-   _highlightPalette: function(active) {
+  _highlightPalette: function(active) {
     var btns = U.qa('#review-palette .pal-btn');
     for (var i = 0; i < btns.length; i++) {
       if (i === active) btns[i].classList.add('pal-cur');
       else btns[i].classList.remove('pal-cur');
-    }
-    var gridBtns = U.qa('#rev-pal-grid .pal-btn');
-    for (var j = 0; j < gridBtns.length; j++) {
-      if (j === active) {
-        gridBtns[j].classList.add('pal-cur');
-        gridBtns[j].scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      }
-      else gridBtns[j].classList.remove('pal-cur');
     }
   },
 
@@ -3753,7 +3592,7 @@ var UICore = {
 
   _initFont: function() {
     var s = Storage.get(Config.STORAGE_KEYS.SETTINGS, {});
-    this._fontLevel = s.fontLevel || 5;
+    this._fontLevel = s.fontLevel || 3;
     this._applyFont();
     var self = this;
     U.onClick('font-decrease', function() {
@@ -3761,7 +3600,7 @@ var UICore = {
       self._applyFont(); self._saveFont();
     });
     U.onClick('font-increase', function() {
-      self._fontLevel = Math.min(9, self._fontLevel + 1);
+      self._fontLevel = Math.min(6, self._fontLevel + 1);
       self._applyFont(); self._saveFont();
     });
   },
@@ -3770,8 +3609,8 @@ var UICore = {
   _applyFont: function() {
     var cl = document.body.className.replace(/fs-\d/g, '').trim();
     document.body.className = cl + ' fs-' + this._fontLevel;
-    var scales = { 1: 0.72, 2: 0.78, 3: 0.84, 4: 0.90, 5: 0.96, 6: 1, 7: 1.08, 8: 1.16, 9: 1.26 };
-    document.documentElement.style.setProperty('--fs', scales[this._fontLevel] || 0.96);
+    var scales = { 1: 0.82, 2: 0.88, 3: 0.94, 4: 1, 5: 1.06, 6: 1.14 };
+    document.documentElement.style.setProperty('--fs', scales[this._fontLevel] || 0.94);
     State.set('fontLevel', this._fontLevel);
   },
 
@@ -5279,8 +5118,8 @@ var DynCSS = {
       '.rv-card-hd{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface2);',
         'border-bottom:1px solid var(--border-l);font-size:.62rem;font-weight:700;color:var(--muted);',
         'text-transform:uppercase;letter-spacing:.03em;}',
-            '.rv-card-bd{padding:10px 12px;font-size:calc(.82rem * var(--fs));color:var(--text);line-height:1.6;',
-        'max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}',
+      '.rv-card-bd{padding:8px 10px;font-size:calc(.8rem * var(--fs));color:var(--text);line-height:1.5;',
+        'max-height:160px;overflow-y:auto;-webkit-overflow-scrolling:touch;}',
       '.rv-card-ft{padding:5px 10px;border-top:1px solid var(--border-l);}',
       '.rv-logic{border-left:3px solid var(--accent);}',
       '.rv-expl{border-left:3px solid var(--primary);}',
