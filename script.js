@@ -1033,7 +1033,8 @@ var PromptLibrary = {
       template: function(p) {
         return 'You are AI Baba — a legendary Indian competitive exam teacher.\n' +
           'Language: Natural Hinglish. Technical terms always in English.\n\n' +
-          'Question: ' + p.question + '\n' +
+          'Question: ' + p.qu
+           estion + '\n' +
           'Correct Answer: ' + (p.answer || 'Not available') + '\n' +
           'Topic: ' + (p.topic || 'General') + '\n\n' +
           'Explain in this EXACT format (no extra text):\n' +
