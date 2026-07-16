@@ -1,0 +1,49 @@
+{
+  "name": "PrepOS — SIMPRA EDTECH",
+  "short_name": "PrepOS",
+  "description": "The AI Exam Operating System — From Practice to Selection",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#060B18",
+  "theme_color": "#2563EB",
+  "lang": "en-IN",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect x='4' y='4' width='72' height='72' rx='18' fill='%232563EB'/><rect x='9' y='9' width='62' height='62' rx='13' fill='%230F172A' opacity='.85'/><text x='40' y='54' text-anchor='middle' font-family='system-ui' font-weight='900' font-size='40' fill='%233B82F6'>P</text><circle cx='62' cy='18' r='5' fill='%23F59E0B'/></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Import Test",
+      "short_name": "Import",
+      "description": "Import a new test",
+      "url": "./index.html#import",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>📖</text></svg>", "sizes": "any" }]
+    },
+    {
+      "name": "AI Baba",
+      "short_name": "AI Baba",
+      "description": "Ask AI Baba",
+      "url":
+
+
+
+
+ "./index.html#ai-baba",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>🤖</text></svg>", "sizes": "any" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "label": "PrepOS Dashboard",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
+}
