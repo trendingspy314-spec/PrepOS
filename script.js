@@ -1,4 +1,44 @@
 ﻿'use strict';
+// ═══════════════════════════════════════════════════════════
+// MOBILE / OLD BROWSER COMPAT SHIM
+// Safe polyfills — non-breaking
+// ═══════════════════════════════════════════════════════════
+(function() {
+  if (!Object.values) {
+    Object.values = function(obj) {
+      var out = [];
+      for (var k in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, k)) out.push(obj[k]);
+      }
+      return out;
+    };
+  }
+
+  if (!String.prototype.padStart) {
+    String.prototype.padStart = function(targetLength, padString) {
+      targetLength = targetLength >> 0;
+      padString = String(typeof padString !== 'undefined' ? padString : ' ');
+      if (this.length >= targetLength) return String(this);
+      targetLength = targetLength - this.length;
+      if (targetLength > padString.length) {
+        padString += new Array(targetLength / padString.length + 1).join(padString);
+      }
+      return padString.slice(0, targetLength) + String(this);
+    };
+  }
+
+  if (!Math.log10) {
+    Math.log10 = function(x) {
+      return Math.log(x) / Math.LN10;
+    };
+  }
+
+  if (!Array.isArray) {
+    Array.isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    };
+  }
+})();
 /* ╔═══════════════════════════════════════════════════════════════╗
    ║  PrepOS v3.0 — SIMPRA EDTECH                                 ║
    ║  The AI Exam Operating System                                ║
@@ -3602,20 +3642,21 @@ var UICore = {
   },
 
 
-    _initSplash: function() {
+     _initSplash: function() {
     var logo = U.el('sp-logo');
     if (logo) logo.innerHTML = Logo.svg(64);
     setTimeout(function() {
-      try {
-        var sp = U.el('splash');
-        if (sp) {
-          sp.classList.add('sp-hide');
-          setTimeout(function() { sp.style.display = 'none'; }, 600);
-        }
-        var app = U.el('app');
-        if (app) app.classList.remove('hidden');
-      } catch(e) {
-        document.body.innerHTML = '<div style="padding:20px;color:red;font-size:14px;">Splash Error: ' + e.message + '</div>';
+      var sp = U.el('splash');
+      if (sp) {
+        sp.classList.add('sp-hide');
+        setTimeout(function() { sp.style.display = 'none'; }, 600);
+      }
+      var app = U.el('app');
+      if (app) app.classList.remove('hidden');
+
+      if (window.__preposSplashFallback) {
+        clearTimeout(window.__preposSplashFallback);
+        window.__preposSplashFallback = null;
       }
     }, 1800);
   },
@@ -5713,17 +5754,9 @@ var App = {
   // PWA SERVICE WORKER
   // ═══════════════════════════════════════════════════════
   _registerSW: function() {
-    if ('serviceWorker' in navigator) {
-      try {
-        navigator.serviceWorker.register('sw.js').then(function(reg) {
-          Kernel.log('info', 'PWA', 'SW registered: ' + reg.scope);
-        }).catch(function(err) {
-          Kernel.log('warn', 'PWA', 'SW registration failed: ' + err.message);
-        });
-      } catch(e) {
-        Kernel.log('warn', 'PWA', 'SW not supported: ' + e.message);
-      }
-    }
+    // Temporary disabled for mobile stability.
+    // We will re-enable after mobile build is fully stable.
+    return;
   }
 };
 
