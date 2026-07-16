@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="description" content="PrepOS — From Practice to Selection">
+<meta name="theme-color" content="#0F172A">
+<title>PrepOS — SIMPRA EDTECH</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'><rect rx='14' width='60' height='60' fill='%232563EB'/><text x='30' y='43' text-anchor='middle' font-family='Arial' font-weight='900' font-size='32' fill='white'>P</text></svg>">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-inner">
+    <div class="sp-logo" id="sp-logo"></div>
+    <div class="sp-name">PrepOS</div>
+    <div class="sp-co">SIMPRA EDTECH</div>
+    <div class="sp-tag">From Practice to Selection</div>
+    <div class="sp-bar-wrap"><div class="sp-bar"></div></div>
+  </div>
+</div>
+
+
+<!-- APP -->
+<div id="app" class="app hidden">
+
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="tb-left">
+      <button id="menu-toggle" class="tb-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="tb-brand">
+        <div id="tb-logo" class="tb-logo"></div>
+        <div class="tb-text">
+          <span class="tb-name">PrepOS</span>
+          <span class="tb-sub">Practice. Analyze. Improve.</span>
+        </div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <button class="tb-btn fs-btn" id="font-decrease">A-</button>
+      <button class="tb-btn fs-btn" id="font-increase">A+</button>
+      <button class="tb-btn" id="calc-toggle" title="Calculator">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h8"/></svg>
+      </button>
+      <button class="tb-btn" id="search-quick-btn" title="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <button class="tb-btn" id="theme-toggle" title="Theme">
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 109 9c0-5-4-9-9-9z"/></svg>
+        <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- SIDEBAR -->
+  <nav id="nav-sidebar" class="sidebar">
+    <div class="sb-brand">
+      <div id="sb-logo" class="sb-logo"></div>
+      <div class="sb-text"><span class="sb-name">PrepOS</span><span class="sb-co">SIMPRA EDTECH</span></div>
+    </div>
+    <ul class="nav-list">
+      <li><a class="nav-link nav-active" data-view="home" href="#">🏠 <span>Dashboard</span></a></li>
+      <li><a class="nav-link" data-view="import" href="#">📖 <span>Import Test</span></a></li>
+      <li><a class="nav-link" data-view="ai-gen" href="#">🧪 <span>AI Test Gen</span></a></li>
+      <li><a class="nav-link" data-view="bank" href="#">🗂 <span>Question Bank</span></a></li>
+      <li><a class="nav-link" data-view="ai-baba" href="#">🤖 <span>AI Baba</span></a></li>
+      <li><a class="nav-link" data-view="history" href="#">📈 <span>History</span></a></li>
+      <li><a class="nav-link" data-view="analytics" href="#">📊 <span>Analytics</span></a></li>
+      <li><a class="nav-link" data-view="bookmarks" href="#">⭐ <span>Bookmarks</span></a></li>
+      <li><a class="nav-link" data-view="search" href="#">🔍 <span>Search</span></a></li>
+      <li><a class="nav-link" data-view="settings" href="#">⚙ <span>Settings</span></a></li>
+    </ul>
+    <div class="sb-foot"><span>v2.0.0</span></div>
+  </nav>
+
+
+  <!-- MAIN -->
+  <main id="main-content" class="main">
+
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+      <div class="vh"><h1>Welcome to <span class="c-primary">PrepOS</span></h1><p id="home-date" class="vhs"></p></div>
+      <div id="home-resume-banner" class="resume-bar hidden">
+        <div class="resume-info"><span class="resume-icon">⏱</span><div><strong>Exam in progress</strong><p id="home-resume-info"></p></div></div>
+        <button class="btn btn-primary" id="home-resume-btn">Resume</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="home-stat-questions">0</div><div class="stat-lbl">Questions</div></div>
+        <div class="stat-card"><div class="stat-val" id="home-stat-tests">0</div><div class="stat-lbl">Tests</div></div>
+        <div class="stat-card"><div class="stat-val" id="home-stat-accuracy">0%</div><div class="stat-lbl">Accuracy</div></div>
+        <div class="stat-card"><div class="stat-val" id="home-stat-weak">0</div><div class="stat-lbl">Weak</div></div>
+      </div>
+      <div class="section-title">Quick Actions</div>
+      <div class="quick-grid">
+        <button class="qk-btn" id="home-action-import">📖 Import</button>
+        <button class="qk-btn" id="home-action-aigen">🧪 AI Test</button>
+        <button class="qk-btn" id="home-action-bank">🗂 Bank</button>
+        <button class="qk-btn" id="home-action-weak">🔴 Weak</button>
+        <button class="qk-btn" id="home-action-aibaba">🤖 AI Baba</button>
+        <button class="qk-btn" id="home-action-bookmarks">⭐ Bookmarks</button>
+      </div>
+      <div class="section-title">Recent Tests</div>
+      <div id="home-recent"></div>
+    </div>
+
+
+    <!-- IMPORT -->
+    <div id="view-import" class="view">
+      <div class="vh"><h1>📖 Import Test</h1><p class="vhs">Paste AI response. Auto-detected.</p></div>
+      <div class="form-group"><label class="form-label">Topic</label><input type="text" id="import-topic" class="form-input" placeholder="e.g. Fluid Mechanics"></div>
+      <div class="form-group">
+        <label class="form-label">Questions <button class="link-btn" id="import-format-help-toggle">📋 Help</button></label>
+        <textarea id="import-textarea" class="form-textarea" rows="12" placeholder="Paste everything here…"></textarea>
+      </div>
+      <div id="import-format-help" class="format-help hidden">
+        <div class="fh-title">Auto-Detected Sections</div>
+        <div class="fh-grid">
+          <div class="fh-card"><div class="fh-label">Questions</div><code>1. What is stress?<br>(A) Force/Area<br>(B) Area/Force<br>Answer: A</code></div>
+          <div class="fh-card"><div class="fh-label">Answer Key</div><code>Answer Key<br>1 A<br>2 B<br>3 C</code></div>
+          <div class="fh-card"><div class="fh-label">One Liner</div><code>One Liner<br>1. Stress = F/A<br>2. Strain is dimensionless</code></div>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" id="import-parse-btn">🔍 Parse</button><button class="btn btn-ghost" id="import-clear-btn">Clear</button></div>
+      <pre id="import-errors" class="import-err hidden"></pre>
+      <div id="import-preview" class="import-prev hidden">
+        <div class="prev-head"><h3><span id="import-preview-count">0</span> Questions</h3><div id="import-sections-info"></div></div>
+        <div id="import-preview-list" class="prev-list"></div>
+        <div class="btn-row"><button class="btn btn-primary" id="import-start-exam-btn">🚀 Start Exam</button><button class="btn btn-secondary" id="import-save-btn">💾 Save to Bank</button></div>
+      </div>
+      <div id="import-exam-config" class="exam-cfg hidden">
+        <h3>⚙ Configuration</h3>
+        <div class="cfg-row"><div class="form-group"><label class="form-label">Questions</label><input type="number" id="import-cfg-count" class="form-input" min="1" value="25"></div><div class="form-group"><label class="form-label">Duration (min)</label><input type="number" id="import-cfg-dur" class="form-input" min="1" value="30"></div></div>
+        <div class="btn-row"><button class="btn btn-primary" id="import-config-start">▶ Begin</button><button class="btn btn-ghost" id="import-config-cancel">Cancel</button></div>
+      </div>
+    </div>
+
+
+    <!-- EXAM -->
+    <div id="view-exam" class="view">
+      <div class="exam-top">
+        <div class="exam-info"><span id="exam-title" class="exam-t"></span><span id="exam-qnum" class="exam-qn"></span></div>
+        <div id="exam-timer" class="exam-timer">00:30:00</div>
+      </div>
+      <div class="exam-body">
+        <div class="exam-main">
+          <div id="exam-question" class="exam-q"></div>
+          <div id="exam-options" class="exam-opts"></div>
+          <div class="exam-actions">
+            <button class="btn btn-secondary btn-sm" id="exam-prev">← Prev</button>
+            <button class="btn btn-secondary btn-sm" id="exam-clear-response">✕ Clear</button>
+            <button class="btn btn-secondary btn-sm" id="exam-mark">☆ Mark</button>
+            <button class="btn btn-secondary btn-sm" id="exam-next">Next →</button>
+          </div>
+          <div class="exam-sub-row"><button class="btn btn-danger" id="exam-submit">Submit</button></div>
+        </div>
+        <div id="exam-pal-panel" class="exam-pal-desktop">
+          <div class="pal-stats-row">
+            <div class="pstat"><span class="pd pd-a"></span><span id="stat-answered">0</span></div>
+            <div class="pstat"><span class="pd pd-na"></span><span id="stat-not-answered">0</span></div>
+            <div class="pstat"><span class="pd pd-m"></span><span id="stat-marked">0</span></div>
+            <div class="pstat"><span class="pd"></span><span id="stat-not-visited">0</span></div>
+          </div>
+          <div id="exam-palette" class="pal-grid"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- RESULT -->
+    <div id="view-result" class="view">
+      <div class="vh" style="text-align:center"><h1>📊 Results</h1><span id="res-title" class="vhs"></span></div>
+      <div class="res-wrap">
+        <div id="res-circle" class="res-circle"><div class="res-inner"><div class="res-score"><span id="res-score">0</span></div><div class="res-of">of <span id="res-max">0</span></div></div></div>
+        <div id="res-badge" class="res-badge">-</div>
+        <div id="res-marks-info" class="res-mi"></div>
+      </div>
+      <div class="res-stats">
+        <div class="rs rs-c"><span class="rs-v" id="res-correct">0</span><span class="rs-l">Correct</span></div>
+        <div class="rs rs-w"><span class="rs-v" id="res-wrong">0</span><span class="rs-l">Wrong</span></div>
+        <div class="rs rs-s"><span class="rs-v" id="res-skip">0</span><span class="rs-l">Skip</span></div>
+        <div class="rs rs-a"><span class="rs-v" id="res-acc">0%</span><span class="rs-l">Accuracy</span></div>
+        <div class="rs rs-t"><span class="rs-v" id="res-time">00:00</span><span class="rs-l">Time</span></div>
+      </div>
+      <div class="btn-row btn-center">
+        <button class="btn btn-primary" id="result-review-btn">📝 Review</button>
+        <button class="btn btn-secondary" id="result-retake-btn">🔄 Retake</button>
+        <button class="btn btn-ghost" id="result-home-btn">🏠 Home</button>
+      </div>
+    </div>
+
+
+    <!-- REVIEW -->
+    <div id="view-review" class="view">
+      <div class="rev-top">
+        <button class="btn btn-ghost btn-sm" id="review-back-btn">← Back</button>
+        <span id="review-qnum" class="rev-qn"></span>
+      </div>
+      <div id="review-filters" class="filter-row">
+        <button class="chip chip-active" data-f="all">All</button>
+        <button class="chip" data-f="correct">✓</button>
+        <button class="chip" data-f="wrong">✗</button>
+        <button class="chip" data-f="skipped">–</button>
+        <button class="chip" data-f="marked">★</button>
+      </div>
+      <div id="review-palette" class="rev-pal"></div>
+      <div id="review-content"></div>
+      <div class="rev-nav">
+        <button class="btn btn-secondary btn-sm" id="review-prev">← Prev</button>
+        <button class="btn btn-secondary btn-sm" id="review-next">Next →</button>
+      </div>
+    </div>
+
+
+    <!-- BANK -->
+    <div id="view-bank" class="view">
+      <div class="vh"><h1>🗂 Question Bank</h1><p class="vhs">Total: <strong id="bank-total-count">0</strong></p></div>
+      <div class="filter-bar">
+        <input type="text" id="bank-search" class="form-input fi" placeholder="🔍 Search…">
+        <select id="bank-filter-topic" class="form-select"><option value="all">All Topics</option></select>
+        <select id="bank-filter-status" class="form-select"><option value="all">All</option><option value="New">New</option><option value="Weak">Weak</option><option value="Learning">Learning</option><option value="Mastered">Mastered</option></select>
+        <label class="fc"><input type="checkbox" id="bank-filter-bookmark"> ⭐</label>
+      </div>
+      <div id="bank-bulk-bar" class="bulk-bar hidden">
+        <label class="fc"><input type="checkbox" id="bank-select-all"> All</label>
+        <span id="bank-selected-count">0</span> selected
+        <button class="btn btn-sm btn-primary" id="bank-create-test-btn">▶ Test</button>
+        <button class="btn btn-sm btn-danger" id="bank-delete-selected-btn">🗑</button>
+      </div>
+      <div id="bank-empty" class="empty hidden">No questions.</div>
+      <div id="bank-list"></div>
+    </div>
+
+
+    <!-- AI BABA -->
+    <div id="view-ai-baba" class="view"></div>
+
+
+    <!-- AI GEN -->
+    <div id="view-ai-gen" class="view"></div>
+
+
+    <!-- HISTORY -->
+    <div id="view-history" class="view">
+      <div class="vh"><h1>📈 History</h1></div>
+      <div id="history-empty" class="empty hidden">No tests yet.</div>
+      <div id="history-list"></div>
+    </div>
+
+
+    <!-- ANALYTICS -->
+    <div id="view-analytics" class="view">
+      <div class="vh"><h1>📊 Analytics</h1></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="an-oa">0%</div><div class="stat-lbl">Accuracy</div></div>
+        <div class="stat-card"><div class="stat-val" id="an-tests">0</div><div class="stat-lbl">Tests</div></div>
+        <div class="stat-card"><div class="stat-val" id="an-att">0</div><div class="stat-lbl">Attempted</div></div>
+        <div class="stat-card"><div class="stat-val" id="an-avg">0s</div><div class="stat-lbl">Avg/Q</div></div>
+        <div class="stat-card"><div class="stat-val" id="an-wp">0%</div><div class="stat-lbl">Wrong%</div></div>
+        <div class="stat-card"><div class="stat-val" id="an-best">0</div><div class="stat-lbl">Best</div></div>
+      </div>
+      <div class="mem-grid">
+        <div class="mc mc-n"><span id="an-new">0</span> New</div>
+        <div class="mc mc-w"><span id="an-weak">0</span> Weak</div>
+        <div class="mc mc-l"><span id="an-learning">0</span> Learning</div>
+        <div class="mc mc-m"><span id="an-mastered">0</span> Mastered</div>
+      </div>
+      <div class="section-title">📈 Trend</div>
+      <div class="chart-box"><canvas id="analytics-chart" width="600" height="200"></canvas></div>
+      <div class="section-title">🔴 Weak</div><div id="an-weak-list"></div>
+      <div class="section-title">🟢 Strong</div><div id="an-strong-list"></div>
+      <div class="section-title">📋 All Topics</div><div id="an-topic-list"></div>
+    </div>
+
+
+    <!-- BOOKMARKS -->
+    <div id="view-bookmarks" class="view">
+      <div class="vh"><h1>⭐ Bookmarks</h1><p class="vhs"><span id="bookmarks-count">0</span> saved</p></div>
+      <div class="btn-row"><button class="btn btn-primary" id="bookmarks-practice-btn">▶ Practice All</button></div>
+      <div id="bookmarks-empty" class="empty hidden">No bookmarks.</div>
+      <div id="bookmarks-list"></div>
+    </div>
+
+
+    <!-- SEARCH -->
+    <div id="view-search" class="view">
+      <div class="vh"><h1>🔍 Search</h1></div>
+      <input type="text" id="search-input" class="form-input search-main" placeholder="Search everything…">
+      <div class="search-scopes">
+        <label class="fc"><input type="checkbox" id="ss-bank" checked> Bank</label>
+        <label class="fc"><input type="checkbox" id="ss-history" checked> History</label>
+        <label class="fc"><input type="checkbox" id="ss-memory" checked> Memory</label>
+        <label class="fc"><input type="checkbox" id="ss-bm" checked> Bookmarks</label>
+      </div>
+      <div id="search-empty" class="empty">Type 2+ chars.</div>
+      <div id="search-results"></div>
+    </div>
+
+
+    <!-- SETTINGS -->
+    <div id="view-settings" class="view">
+      <div class="vh"><h1>⚙ Settings</h1></div>
+      <div class="card">
+        <h2>🎯 Exam Defaults</h2>
+        <div class="cfg-row">
+          <div class="form-group"><label class="form-label">Duration</label><input type="number" id="s-dur" class="form-input" value="30"></div>
+          <div class="form-group"><label class="form-label">Questions</label><input type="number" id="s-count" class="form-input" value="25"></div>
+        </div>
+        <div class="cfg-row">
+          <div class="form-group"><label class="form-label">+Correct</label><input type="number" id="s-mc" class="form-input" step="0.25" value="4"></div>
+          <div class="form-group"><label class="form-label">-Wrong</label><input type="number" id="s-mw" class="form-input" step="0.25" value="1"></div>
+        </div>
+        <button class="btn btn-primary" id="settings-save-defaults-btn">💾 Save</button>
+      </div>
+      <div class="card">
+        <h2>🎨 Theme</h2>
+        <label class="switch-wrap"><span>Dark Mode</span><input type="checkbox" id="settings-dark-mode" class="switch-in" checked><span class="switch-sl"></span></label>
+      </div>
+      <div class="card">
+        <h2>💾 Backup</h2>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="settings-backup-btn">📤 Export</button>
+          <button class="btn btn-secondary" id="settings-restore-btn">📥 Import</button>
+          <input type="file" id="settings-restore-input" accept=".json" style="display:none">
+        </div>
+      </div>
+      <div class="card">
+        <h2>🗑 Clear</h2>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="settings-clear-bank-btn">Bank</button>
+          <button class="btn btn-ghost" id="settings-clear-history-btn">History</button>
+          <button class="btn btn-danger" id="settings-clear-all-btn">🗑 All</button>
+        </div>
+      </div>
+      <div class="about">
+        <div id="about-logo"></div>
+        <div class="about-name">PrepOS</div>
+        <div class="about-co">SIMPRA EDTECH</div>
+        <div class="about-tag">From Practice to Selection</div>
+        <div class="about-ver">v2.0.0</div>
+      </div>
+    </div>
+
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bnav nav-active" data-view="home">🏠<span>Home</span></button>
+    <button class="bnav" data-view="import">📖<span>Import</span></button>
+    <button class="bnav" data-view="ai-baba">🤖<span>AI Baba</span></button>
+    <button class="bnav" data-view="history">📈<span>History</span></button>
+    <button class="bnav" data-view="settings">⚙<span>Settings</span></button>
+  </nav>
+
+
+  <!-- TOAST -->
+  <div id="toast-container" class="toast-wrap"></div>
+
+
+  <!-- MODAL -->
+  <div id="modal-overlay" class="modal-ov hidden">
+    <div class="modal-box">
+      <h3 id="modal-title"></h3>
+      <p id="modal-message"></p>
+      <div class="modal-act"><button class="btn btn-ghost" id="modal-cancel">Cancel</button><button class="btn btn-danger" id="modal-confirm">Confirm</button></div>
+    </div>
+  </div>
+
+
+  <!-- CALCULATOR -->
+  <div id="calc-overlay" class="calc-ov hidden">
+    <div class="calc-box">
+      <div class="calc-head"><span>🧮 Calculator</span><button class="btn btn-ghost btn-sm" id="calc-close">✕</button></div>
+      <input type="text" id="calc-display" class="calc-disp" readonly value="0">
+      <div id="calc-history" class="calc-hist"></div>
+      <div class="calc-grid">
+        <button class="cb cf" data-v="sin(">sin</button><button class="cb cf" data-v="cos(">cos</button><button class="cb cf" data-v="tan(">tan</button><button class="cb cf" data-v="Math.log(">ln</button><button class="cb cf" data-v="Math.log10(">log</button>
+        <button class="cb cf" data-v="Math.sqrt(">√</button><button class="cb cf" data-v="**2">x²</button><button class="cb cf" data-v="**3">x³</button><button class="cb cf" data-v="**">xʸ</button><button class="cb cf" data-v="Math.PI">π</button>
+        <button class="cb cf" data-v="(">(</button><button class="cb cf" data-v=")">)</button><button class="cb cf" data-v="%">%</button><button class="cb cf" data-v="1/">1/x</button><button class="cb co" data-v="CE">CE</button>
+        <button class="cb" data-v="7">7</button><button class="cb" data-v="8">8</button><button class="cb" data-v="9">9</button><button class="cb co" data-v="/">/</button><button class="cb co" data-v="C">C</button>
+        <button class="cb" data-v="4">4</button><button class="cb" data-v="5">5</button><button class="cb" data-v="6">6</button><button class="cb co" data-v="*">×</button><button class="cb co" data-v="BS">⌫</button>
+        <button class="cb" data-v="1">1</button><button class="cb" data-v="2">2</button><button class="cb" data-v="3">3</button><button class="cb co" data-v="-">−</button><button class="cb co" data-v="ANS">Ans</button>
+        <button class="cb" data-v="0">0</button><button class="cb" data-v="00">00</button><button class="cb" data-v=".">.</button><button class="cb co" data-v="+">+</button><button class="cb ceq" data-v="=">=</button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
