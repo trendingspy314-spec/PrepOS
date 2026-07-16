@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#0F172A">
 <title>PrepOS — SIMPRA EDTECH</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'><rect rx='14' width='60' height='60' fill='%232563EB'/><text x='30' y='43' text-anchor='middle' font-family='Arial' font-weight='900' font-size='32' fill='white'>P</text></svg>">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json?v=3.0.2">
+<link rel="stylesheet" href="style.css?v=3.0.2">
 </head>
 <body>
 
@@ -399,6 +399,19 @@
 </div>
 
 
-<script src="script.js"></script>
+<script>
+(function(){
+  window.__preposSplashFallback = setTimeout(function(){
+    var app = document.getElementById('app');
+    var splash = document.getElementById('splash');
+    if (app) app.classList.remove('hidden');
+    if (splash) {
+      splash.classList.add('sp-hide');
+      setTimeout(function(){ splash.style.display = 'none'; }, 400);
+    }
+  }, 4000);
+})();
+</script>
+<script src="script.js?v=3.0.2"></script>
 </body>
 </html>
