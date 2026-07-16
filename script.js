@@ -929,15 +929,15 @@ var AIManager = {
 
 
   // ── PROMPT LIBRARY ──
-  explain: function(question, correctAns, topic, callback) {
+    explain: function(question, correctAns, topic, callback) {
     var prompt = PromptLibrary.get('explain', { question: question, answer: correctAns, topic: topic });
-    this.call(prompt, { maxTokens: 600, temperature: 0.2, cacheType: 'explain' }, callback);
+    this.call(prompt, { maxTokens: 1500, temperature: 0.25, cacheType: 'explain' }, callback);
   },
 
 
-  generateSimilar: function(question, topic, callback) {
+   generateSimilar: function(question, topic, callback) {
     var prompt = PromptLibrary.get('similar', { question: question, topic: topic });
-    this.call(prompt, { maxTokens: 1024, temperature: 0.5, noCache: true }, callback);
+    this.call(prompt, { maxTokens: 3000, temperature: 0.5, noCache: true }, callback);
   },
 
 
@@ -1022,38 +1022,74 @@ var PromptLibrary = {
     var self = this;
 
 
-    self._prompts.explain = {
-      v: '1.0', type: 'explain',
+       self._prompts.explain = {
+      v: '2.0', type: 'explain',
       template: function(p) {
-        return 'You are AI Baba — a legendary Indian competitive exam teacher.\n' +
-          'Language: Natural Hinglish. Technical terms always in English.\n\n' +
+        return 'You are AI Baba — India\'s most legendary competitive exam teacher (IAS/UPSC/Engineering level).\n' +
+          'Language: Natural Hinglish (Hindi sentence structure, English technical terms).\n' +
+          'Style: Like a senior faculty who breaks down everything from scratch — UPSC Mains answer quality.\n\n' +
           'Question: ' + p.question + '\n' +
           'Correct Answer: ' + (p.answer || 'Not available') + '\n' +
           'Topic: ' + (p.topic || 'General') + '\n\n' +
-          'Explain in this EXACT format (no extra text):\n' +
-          '**Concept:** [1 line concept]\n' +
-          '**Why This:** [Simple reason]\n' +
-          '**Formula:** [Formula if applicable, else skip]\n' +
-          '**Logic:** [Step-by-step reasoning]\n' +
-          '**Shortcut:** [Quick exam trick]\n' +
-          '**Common Mistake:** [What students do wrong]\n' +
-          '**Memory Trick:** [Easy to remember]\n' +
-          '**PYQ Pattern:** [How this appears in exams]\n' +
-          '**Final Takeaway:** [1 line summary]\n\n' +
-          'Max 200 words. Be concise. Exam-focused.';
+          'Give a COMPLETE, STRUCTURED explanation in this EXACT format:\n\n' +
+          '## 🎯 CONCEPT OVERVIEW\n' +
+          'Explain the core concept in 3-4 lines. What is this topic about? Why does it matter?\n\n' +
+          '## ✅ CORRECT ANSWER ANALYSIS\n' +
+          'Why is this the correct answer? Break it down step by step.\n' +
+          '- Step 1: [First principle/observation]\n' +
+          '- Step 2: [Apply formula/logic]\n' +
+          '- Step 3: [Arrive at answer]\n\n' +
+          '## ❌ WHY OTHER OPTIONS ARE WRONG\n' +
+          'Analyze each wrong option briefly:\n' +
+          '- Option X: Why wrong (1 line)\n' +
+          '- Option Y: Why wrong (1 line)\n\n' +
+          '## 📐 FORMULA / THEORY\n' +
+          'All relevant formulas, definitions, theorems. If numerical — show complete calculation.\n\n' +
+          '## 🧠 MEMORY TRICK\n' +
+          'A desi mnemonic, shortcut, or pattern to remember forever.\n\n' +
+          '## ⚡ EXAM SHORTCUT\n' +
+          'How to solve this in 30 seconds during exam. Quick elimination technique.\n\n' +
+          '## ⚠️ COMMON MISTAKES\n' +
+          'Top 2-3 mistakes students make in this type of question.\n\n' +
+          '## 📊 PYQ PATTERN\n' +
+          'How this concept appears in SSC/UPSC/GATE/Railway exams. Frequency and variations.\n\n' +
+          '## 🔗 CONNECTED CONCEPTS\n' +
+          'Related topics student should also revise (2-3 topics with 1-line each).\n\n' +
+          '## 💡 FINAL TAKEAWAY\n' +
+          'One powerful line that summarizes everything.\n\n' +
+          'RULES:\n' +
+          '- Be thorough but structured\n' +
+          '- Use bullet points and numbered lists\n' +
+          '- Every section must have real content (no filler)\n' +
+          '- Hinglish naturally — jaise class mein padhate ho\n' +
+          '- If numerical: show COMPLETE step-by-step calculation\n' +
+          '- Target: 400-500 words (quality over brevity)';
       }
     };
 
-
-    self._prompts.similar = {
-      v: '1.0', type: 'generate',
+       self._prompts.similar = {
+      v: '2.0', type: 'generate',
       template: function(p) {
-        return 'Generate 3 similar MCQ questions on: ' + (p.topic || 'General') + '\n' +
-          'Reference question: ' + p.question + '\n\n' +
-          'RULES:\n- Different concepts but same topic\n- Exam quality\n- No duplicate ideas\n\n' +
-          'Format EXACTLY:\n1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\n' +
-          'Answer: [Letter]\nOne Line Logic: [Brief]\n\n' +
-          'Generate 3 questions now.';
+        return 'Generate exactly 10 high-quality MCQ questions on: ' + (p.topic || 'General') + '\n' +
+          'Reference question style: ' + p.question + '\n\n' +
+          'RULES:\n' +
+          '- All 10 questions must be UNIQUE concepts within same topic\n' +
+          '- Mix of Easy (3), Medium (4), Hard (3) difficulty\n' +
+          '- Include: Conceptual, Numerical, Application-based variety\n' +
+          '- Authentic exam quality (SSC/UPSC/GATE level)\n' +
+          '- Each question must test a DIFFERENT sub-concept\n' +
+          '- No repeated ideas or similar patterns\n' +
+          '- Options should be realistic and tricky\n\n' +
+          'Format EXACTLY for each:\n' +
+          '1. [Question]\n' +
+          '(A) [Option]\n' +
+          '(B) [Option]\n' +
+          '(C) [Option]\n' +
+          '(D) [Option]\n' +
+          'Answer: [Letter]\n' +
+          'One Line Logic: [Clear 1-line explanation]\n' +
+          'Difficulty: [Easy/Medium/Hard]\n\n' +
+          'Generate all 10 questions now:';
       }
     };
 
@@ -3734,8 +3770,8 @@ var UICore = {
   _applyFont: function() {
     var cl = document.body.className.replace(/fs-\d/g, '').trim();
     document.body.className = cl + ' fs-' + this._fontLevel;
-    var scales = { 1: 0.82, 2: 0.88, 3: 0.94, 4: 1, 5: 1.06, 6: 1.14 };
-    document.documentElement.style.setProperty('--fs', scales[this._fontLevel] || 0.94);
+    var scales = { 1: 0.72, 2: 0.78, 3: 0.84, 4: 0.90, 5: 0.96, 6: 1, 7: 1.08, 8: 1.16, 9: 1.26 };
+    document.documentElement.style.setProperty('--fs', scales[this._fontLevel] || 0.96);
     State.set('fontLevel', this._fontLevel);
   },
 
@@ -5243,8 +5279,8 @@ var DynCSS = {
       '.rv-card-hd{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface2);',
         'border-bottom:1px solid var(--border-l);font-size:.62rem;font-weight:700;color:var(--muted);',
         'text-transform:uppercase;letter-spacing:.03em;}',
-      '.rv-card-bd{padding:8px 10px;font-size:calc(.8rem * var(--fs));color:var(--text);line-height:1.5;',
-        'max-height:160px;overflow-y:auto;-webkit-overflow-scrolling:touch;}',
+            '.rv-card-bd{padding:10px 12px;font-size:calc(.82rem * var(--fs));color:var(--text);line-height:1.6;',
+        'max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}',
       '.rv-card-ft{padding:5px 10px;border-top:1px solid var(--border-l);}',
       '.rv-logic{border-left:3px solid var(--accent);}',
       '.rv-expl{border-left:3px solid var(--primary);}',
