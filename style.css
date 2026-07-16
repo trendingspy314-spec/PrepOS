@@ -234,15 +234,17 @@ body{--fs:.94}
 /* ── FIXED BOTTOM 3 BUTTONS (Mobile) ── */
 .exam-bottom-fixed{display:none;position:fixed;bottom:0;left:0;right:0;z-index:250;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border-l);padding:8px 10px 12px}
 .exam-bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.exam-bottom-grid-5{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px}
 .exam-bottom-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:12px 4px;border-radius:var(--r-lg);border:2px solid var(--border);background:var(--surface);color:var(--text);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .12s;min-height:54px;-webkit-tap-highlight-color:transparent}
 .exam-bottom-btn:active{transform:scale(.93);background:var(--primary-l)}
 .exam-bottom-btn .ebb-icon{font-size:1.2rem}
 .exam-bottom-btn .ebb-text{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 .exam-bottom-btn.ebb-submit{background:var(--error-l);border-color:var(--error);color:var(--error)}
 .exam-bottom-btn.ebb-submit:active{background:var(--error);color:#fff}
+.exam-bottom-btn.ebb-clear{border-color:var(--accent);color:var(--accent)}
+.exam-bottom-btn.ebb-clear:active{background:var(--accent-l)}
 .exam-bottom-btn.ebb-mark{border-color:var(--purple);color:var(--purple)}
 .exam-bottom-btn.ebb-mark.ebb-marked{background:var(--purple);color:#fff}
-
 
 /* Desktop Palette */
 .exam-pal-desktop{width:200px;flex-shrink:0;background:var(--surface);border:1px solid var(--border-l);border-radius:var(--r-lg);padding:8px;position:sticky;top:0;max-height:calc(100vh - 100px);overflow-y:auto}
@@ -506,11 +508,14 @@ body{--fs:.94}
   .res-score{font-size:1.3rem}
 
   /* ── Exam Small Screen ── */
+   /* ── Exam Small Screen ── */
   .exam-q{font-size:calc(.88rem * var(--fs));padding:10px}
   .opt-item{padding:10px 12px;min-height:44px;gap:8px}
   .opt-label{min-width:28px;height:28px;font-size:.75rem}
-  .exam-bottom-btn{min-height:50px;padding:10px 4px}
-  .exam-bottom-btn .ebb-icon{font-size:1.1rem}
+  .exam-bottom-btn{min-height:46px;padding:8px 2px}
+  .exam-bottom-btn .ebb-icon{font-size:1rem}
+  .exam-bottom-btn .ebb-text{font-size:.52rem}
+  .exam-bottom-grid-5{gap:3px}
   .exam-timer{font-size:.95rem;min-width:80px}
 }
 
