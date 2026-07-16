@@ -464,8 +464,22 @@ body{--fs:.94}
   @keyframes sIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
   .main{margin-left:0;padding:10px;padding-bottom:calc(var(--bot-h) + 14px)}
   .bottom-nav{display:flex;align-items:stretch;justify-content:space-around}
+
+  /* ── Exam Mobile Overrides ── */
   .exam-body{flex-direction:column}
   .exam-pal-desktop{display:none}
+  .exam-bottom-fixed{display:block}
+  .exam-actions{display:none}
+  .exam-sub-row{display:none}
+  .bottom-nav.exam-active{display:none}
+  .exam-q{font-size:calc(.95rem * var(--fs));padding:12px;border-left-width:3px}
+  .opt-item{padding:12px 14px;min-height:48px;margin-bottom:5px}
+  .opt-label{min-width:30px;height:30px;font-size:.8rem}
+  .opt-text{font-size:calc(.88rem * var(--fs))}
+  .exam-timer{font-size:1.05rem;min-width:88px;padding:4px 8px}
+  .exam-main{padding-bottom:80px}
+
+  /* ── Rest ── */
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .quick-grid{grid-template-columns:repeat(3,1fr)}
   .cfg-row{grid-template-columns:1fr}
@@ -473,6 +487,7 @@ body{--fs:.94}
   .res-stats{grid-template-columns:repeat(3,1fr)}
   .filter-bar{flex-direction:column}
   .fi{max-width:100%!important}
+}
 }
 
 
