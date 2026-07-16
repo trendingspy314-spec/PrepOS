@@ -499,6 +499,14 @@ body{--fs:.94}
   .res-circle{width:100px;height:100px}
   .res-inner{width:80px;height:80px}
   .res-score{font-size:1.3rem}
+
+  /* ── Exam Small Screen ── */
+  .exam-q{font-size:calc(.88rem * var(--fs));padding:10px}
+  .opt-item{padding:10px 12px;min-height:44px;gap:8px}
+  .opt-label{min-width:28px;height:28px;font-size:.75rem}
+  .exam-bottom-btn{min-height:50px;padding:10px 4px}
+  .exam-bottom-btn .ebb-icon{font-size:1.1rem}
+  .exam-timer{font-size:.95rem;min-width:80px}
 }
 
 
