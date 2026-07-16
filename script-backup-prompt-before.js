@@ -261,7 +261,7 @@ var Config = {
   Q_COUNTS: [10, 25, 50, 75, 100, 150],
   LANGS: ['English','Hindi','Mixed'],
 
-
+  DEFAULT_AI_KEY: 'sk-or-v1-yourkeyhere',
   FOUNDER_PIN_HASH: null // Set after first setup
 };
 
@@ -688,11 +688,11 @@ var AIManager = {
     this._cfg = Storage.get(Config.STORAGE_KEYS.AI_CONFIG, null) || {
       provider: 'openrouter',
       model: Config.AI.MODELS[0].id,
-      apiKey: '',
+            apiKey: Config.DEFAULT_AI_KEY || '',
       geminiKey: '',
       temperature: 0.3,
       maxTokens: 1024,
-      setupDone: false
+      setupDone: true
     };
     this._cache = Storage.get(Config.STORAGE_KEYS.AI_CACHE, {}) || {};
     this._trimCache();
