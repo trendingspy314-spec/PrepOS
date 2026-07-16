@@ -2715,9 +2715,9 @@ var ReviewEngine = {
     bar.className = 'rev-bottom-fixed';
     bar.innerHTML =
       '<div class="rev-bottom-grid">' +
-      '<button class="rev-bottom-btn" id="rbb-prev"><span class="rbb-icon">◀</span><span class="rbb-text">Prev</span></button>' +
+           '<button class="rev-bottom-btn rbb-prev" id="rbb-prev"><span class="rbb-icon">◀</span><span class="rbb-text">Prev</span></button>' +
       '<button class="rev-bottom-btn rbb-back" id="rbb-back"><span class="rbb-icon">↩</span><span class="rbb-text">Back</span></button>' +
-      '<button class="rev-bottom-btn" id="rbb-next"><span class="rbb-icon">▶</span><span class="rbb-text">Next</span></button>' +
+      '<button class="rev-bottom-btn rbb-next" id="rbb-next"><span class="rbb-icon">▶</span><span class="rbb-text">Next</span></button>' +
       '</div>';
     document.body.appendChild(bar);
 
