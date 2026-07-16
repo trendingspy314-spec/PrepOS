@@ -2118,7 +2118,29 @@ var ExamEngine = {
   // ── MOBILE PALETTE ──
   _injectMobilePalette: function() {
     this._removeMobilePalette();
+    // ── Fixed Bottom Bar ──
+    var bottomBar = document.createElement('div');
+    bottomBar.id = 'exam-bottom-fixed';
+    bottomBar.className = 'exam-bottom-fixed';
+    bottomBar.innerHTML =
+      '<div class="exam-bottom-grid-5">' +
+      '<button class="exam-bottom-btn" id="ebb-prev"><span class="ebb-icon">◀</span><span class="ebb-text">Prev</span></button>' +
+      '<button class="exam-bottom-btn ebb-clear" id="ebb-clear"><span class="ebb-icon">✕</span><span class="ebb-text">Clear</span></button>' +
+      '<button class="exam-bottom-btn ebb-mark" id="ebb-mark"><span class="ebb-icon">☆</span><span class="ebb-text">Mark</span></button>' +
+      '<button class="exam-bottom-btn ebb-submit" id="ebb-submit"><span class="ebb-icon">✓</span><span class="ebb-text">Submit</span></button>' +
+      '<button class="exam-bottom-btn" id="ebb-next"><span class="ebb-icon">▶</span><span class="ebb-text">Next</span></button>' +
+      '</div>';
+    document.body.appendChild(bottomBar);
 
+    var botNav = U.q('.bottom-nav');
+    if (botNav) botNav.classList.add('exam-active');
+
+    var self2 = this;
+    U.onClick('ebb-prev', function() { self2.prev(); });
+    U.onClick('ebb-next', function() { self2.next(); });
+    U.onClick('ebb-clear', function() { self2.clearResponse(); });
+    U.onClick('ebb-mark', function() { self2.toggleMark(); });
+    U.onClick('ebb-submit', function() { self2.requestSubmit(); });
 
     var fab = document.createElement('button');
     fab.id = 'exam-pal-fab';
