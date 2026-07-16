@@ -685,19 +685,36 @@ var AIManager = {
 
 
   init: function() {
-    this._cfg = Storage.get(Config.STORAGE_KEYS.AI_CONFIG, null) || {
-      provider: 'openrouter',
-      model: Config.AI.MODELS[0].id,
-      apiKey: '',
-      geminiKey: '',
-      temperature: 0.3,
-      maxTokens: 1024,
-      setupDone: false
-    };
+    var DEFAULT_KEY = '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
+';
+    var DEFAULT_PROVIDER = 'openrouter';
+    var DEFAULT_MODEL = Config.AI.MODELS[0].id;
+
+    var saved = Storage.get(Config.STORAGE_KEYS.AI_CONFIG, null);
+
+    if (saved && saved.setupDone) {
+      this._cfg = saved;
+    } else {
+      this._cfg = {
+        provider: DEFAULT_PROVIDER,
+        model: DEFAULT_MODEL,
+        apiKey: DEFAULT_KEY,
+        geminiKey: '',
+        temperature: 0.3,
+        maxTokens: 1024,
+        setupDone: true
+      };
+      Storage.set(Config.STORAGE_KEYS.AI_CONFIG, this._cfg);
+    }
+
+    if (!this._cfg.apiKey && DEFAULT_KEY) {
+      this._cfg.apiKey = DEFAULT_KEY;
+      Storage.set(Config.STORAGE_KEYS.AI_CONFIG, this._cfg);
+    }
+
     this._cache = Storage.get(Config.STORAGE_KEYS.AI_CACHE, {}) || {};
     this._trimCache();
   },
-
 
   isConfigured: function() {
     return !!(this._cfg && this._cfg.setupDone &&
