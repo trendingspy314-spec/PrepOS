@@ -2184,12 +2184,15 @@ var ExamEngine = {
     this._updateFAB();
   },
 
-
   _removeMobilePalette: function() {
     var fab = U.el('exam-pal-fab');
     if (fab) fab.parentNode.removeChild(fab);
     var ov = U.el('exam-pal-overlay');
     if (ov) ov.parentNode.removeChild(ov);
+    var bb = U.el('exam-bottom-fixed');
+    if (bb) bb.parentNode.removeChild(bb);
+    var botNav = U.q('.bottom-nav');
+    if (botNav) botNav.classList.remove('exam-active');
   },
 
 
