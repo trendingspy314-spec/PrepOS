@@ -3602,17 +3602,21 @@ var UICore = {
   },
 
 
-  _initSplash: function() {
+    _initSplash: function() {
     var logo = U.el('sp-logo');
     if (logo) logo.innerHTML = Logo.svg(64);
     setTimeout(function() {
-      var sp = U.el('splash');
-      if (sp) {
-        sp.classList.add('sp-hide');
-        setTimeout(function() { sp.style.display = 'none'; }, 600);
+      try {
+        var sp = U.el('splash');
+        if (sp) {
+          sp.classList.add('sp-hide');
+          setTimeout(function() { sp.style.display = 'none'; }, 600);
+        }
+        var app = U.el('app');
+        if (app) app.classList.remove('hidden');
+      } catch(e) {
+        document.body.innerHTML = '<div style="padding:20px;color:red;font-size:14px;">Splash Error: ' + e.message + '</div>';
       }
-      var app = U.el('app');
-      if (app) app.classList.remove('hidden');
     }, 1800);
   },
 
@@ -5319,8 +5323,10 @@ var App = {
     if (State.isDisabled(moduleName)) return;
     try {
       fn();
-    } catch(e) {
-      Kernel.log('error', 'App.safe[' + moduleName + ']', e.message);
+       } catch(e) {
+      Kernel.log('error', 'App', 'BOOT FAILED: ' + e.message);
+      this._renderCrashScreen(e.message + ' | Line: ' + (e.stack || '').slice(0, 200));
+    }
       State.disable(moduleName);
       UICore.toast(moduleName + ' error — disabled.', 'warning', 3000);
     }
