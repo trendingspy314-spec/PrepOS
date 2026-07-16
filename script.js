@@ -688,11 +688,12 @@ var AIManager = {
     this._cfg = Storage.get(Config.STORAGE_KEYS.AI_CONFIG, null) || {
       provider: 'openrouter',
       model: Config.AI.MODELS[0].id,
-      apiKey: '',
+      apiKey: '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
+',
       geminiKey: '',
       temperature: 0.3,
       maxTokens: 1024,
-      setupDone: false
+      setupDone: true
     };
     this._cache = Storage.get(Config.STORAGE_KEYS.AI_CACHE, {}) || {};
     this._trimCache();
