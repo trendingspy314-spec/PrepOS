@@ -953,11 +953,17 @@ var AIManager = {
   },
 
 
-  generateQuestions: function(params, callback) {
+   generateQuestions: function(params, callback) {
     var prompt = PromptLibrary.get('generate', params);
+    var count = Math.max(1, params.count || 10);
+    var sub = String(params.subject || '').toLowerCase();
+    var tokensPerQ = 200;
+    if (sub === 'civil engineering' || sub === 'civil') tokensPerQ = 300;
+    else if (PromptLibrary._isNonTechSubject(params.subject)) tokensPerQ = 260;
+    var total = Math.min(7000, Math.max(1800, count * tokensPerQ));
     this.call(prompt, {
-      maxTokens: params.count * 200,
-      temperature: 0.5,
+      maxTokens: total,
+      temperature: 0.42,
       noCache: true,
       noFallback: false
     }, callback);
@@ -1071,10 +1077,12 @@ var PromptLibrary = {
 
 
     self._prompts.generate = {
-      v: '1.0', type: 'generate',
+      v: '4.0', type: 'generate',
       template: function(p) {
+        if (self._isCivilSubject(p.subject)) return self._buildCivilPrompt(p);
+        if (self._isNonTechSubject(p.subject)) return self._buildNonTechPrompt(p);
         var examPrompts = self._getExamPrompt(p.exam, p.subject);
-        return 'Generate exactly ' + p.count + ' MCQ questions.\n\n' +
+        return 'Generate exactly ' + (p.count || 10) + ' MCQ questions.\n\n' +
           'Exam: ' + (p.exam || 'Custom') + '\n' +
           'Subject: ' + (p.subject || 'General') + '\n' +
           (p.topic ? 'Topic: ' + p.topic + '\n' : '') +
@@ -1083,15 +1091,12 @@ var PromptLibrary = {
           'Language: ' + (p.lang || 'English') + '\n\n' +
           examPrompts + '\n\n' +
           'STRICT RULES:\n' +
-          '- Exactly ' + p.count + ' questions\n' +
+          '- Exactly ' + (p.count || 10) + ' questions\n' +
           '- Unique concepts only\n' +
-          '- Authentic ' + (p.exam || 'exam') + ' style\n' +
-          '- ' + (p.difficulty || 'Medium') + ' difficulty strictly\n' +
+          '- Authentic exam style\n' +
           (p.usedTopics && p.usedTopics.length ? '- Avoid: ' + p.usedTopics.join(', ') + '\n' : '') +
-          '\nFormat EXACTLY for each:\n' +
-          '1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\n' +
-          'Answer: [Letter]\nOne Line Logic: [Brief]\nTopic: [Topic]\n\n' +
-          'Start generating ' + p.count + ' questions now:';
+          '\nFormat:\n1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\nAnswer: [Letter]\nOne Line Logic: [Brief]\n\n' +
+          'Generate now.';
       }
     };
 
@@ -1130,7 +1135,140 @@ var PromptLibrary = {
     return 'Exam Requirements: ' + (examRules[exam] || examRules.default);
   },
 
+  _isCivilSubject: function(subject) {
+    var s = String(subject || '').toLowerCase().trim();
+    return s === 'civil engineering' || s === 'civil';
+  },
 
+  _isNonTechSubject: function(subject) {
+    var s = String(subject || '').toLowerCase().trim();
+    var arr = ['reasoning','mathematics','general studies','history','polity','geography','economics','physics','chemistry','biology','environment','current affairs','banking','computer','insurance','mixed'];
+    for (var i = 0; i < arr.length; i++) { if (arr[i] === s) return true; }
+    return false;
+  },
+
+  _getCivilExamLine: function(exam) {
+    var e = String(exam || '').toLowerCase();
+    if (e.indexOf('ssc je') !== -1) return 'Target SSC JE level: practical, concept-first, medium-to-hard, fast-solvable.';
+    if (e.indexOf('rrb je') !== -1) return 'Target RRB JE level: application-oriented, high PYQ resemblance, railway JE style traps.';
+    if (e.indexOf('state ae') !== -1) return 'Target State AE level: concept depth, application, selective code awareness.';
+    if (e.indexOf('state je') !== -1) return 'Target State JE level: field-oriented, practical, moderate-to-hard.';
+    if (e.indexOf('bpsc') !== -1) return 'Target BPSC AE level: serious conceptual strength, application-heavy.';
+    if (e.indexOf('ese') !== -1) return 'Target ESE Pre level: concept-rich, analytical, high-quality framing.';
+    if (e.indexOf('gate') !== -1) return 'Target GATE concept level: precision-focused, objective competitive style.';
+    return 'Target technical recruitment exam level: practical, concept-driven, exam-authentic.';
+  },
+
+  _getNonTechExamLine: function(exam) {
+    var e = String(exam || '').toLowerCase();
+    if (e.indexOf('ssc je') !== -1) return 'Target SSC JE non-tech: practical GS, moderate facts, strong elimination.';
+    if (e.indexOf('rrb je') !== -1) return 'Target RRB JE non-tech: factual + conceptual balance, smart distractors.';
+    if (e.indexOf('state ae') !== -1) return 'Target State AE non-tech: stronger concept clarity, state PSC style depth.';
+    if (e.indexOf('state je') !== -1) return 'Target State JE non-tech: practical, moderate difficulty, elimination based.';
+    if (e.indexOf('ssc cgl') !== -1) return 'Target SSC CGL style: broader GS, tighter distractors, pattern-based.';
+    return 'Target government competitive non-tech exam level: practical, factual, concept-linked.';
+  },
+
+  _getNonTechSubjectFocus: function(subject) {
+    var s = String(subject || '').toLowerCase().trim();
+    var map = {
+      'current affairs': 'Use only reliable current affairs. Connect with static GK wherever natural.',
+      'general studies': 'Generate balanced GS mix: factual + conceptual + connection-based.',
+      'history': 'Focus on timeline, cause-effect, personalities, movements, confusion-prone overlaps.',
+      'polity': 'Focus on Articles, constitutional bodies, amendments, functions, comparisons.',
+      'geography': 'Focus on map logic, state-river-mountain relations, climate, resources.',
+      'economics': 'Focus on basic economy, inflation, banking terms, budget concepts, schemes.',
+      'physics': 'Focus on competitive physics: concept clarity, applications, misconceptions.',
+      'chemistry': 'Focus on properties, reactions, uses, classification, common confusion areas.',
+      'biology': 'Focus on functions, systems, disease, nutrition, ecology links.',
+      'environment': 'Focus on ecology, biodiversity, climate, conventions, protected areas.',
+      'computer': 'Focus on hardware, software, memory, networking, MS Office, security.',
+      'reasoning': 'Focus on pattern recognition, elimination, visual simplicity, gradual difficulty.',
+      'mathematics': 'Focus on arithmetic basics, concept clarity, speed methods, calculation traps.',
+      'banking': 'Focus on banking awareness, RBI, financial terms, digital banking.',
+      'insurance': 'Focus on insurance awareness, terms, regulators, policy logic.',
+      'mixed': 'Generate smart mixed non-tech set with diversity and progressive learning.'
+    };
+    return map[s] || 'Generate practical, exam-authentic non-tech questions.';
+  },
+
+  _buildCivilPrompt: function(p) {
+    var count = p.count || 10;
+    var exam = p.exam || 'Custom';
+    var topic = p.topic || 'Mixed Civil Engineering';
+    var difficulty = p.difficulty || 'Medium';
+    var style = p.style || 'Mixed';
+    var lang = p.lang || 'English';
+    var avoid = (p.usedTopics && p.usedTopics.length) ? 'Avoid these subtopics: ' + p.usedTopics.join(', ') + '.' : 'Avoid repeating same sub-concept.';
+
+    return 'PREPOS CIVIL ENGINEERING ENGINE v4.0\n\n' +
+      'ROLE\n' +
+      'You are India\'s chief Civil Engineering competitive exam paper setter and PYQ intelligence scientist.\n' +
+      'You analysed 50,000+ PYQs across SSC JE, RRB JE, State AE/JE, BPSC AE, GATE, ESE Pre.\n' +
+      'Generate completely original questions. Never copy or paraphrase PYQs.\n\n' +
+      'EXAM TARGET\n' + this._getCivilExamLine(exam) + '\n\n' +
+      'REQUEST\nExam: ' + exam + '\nSubject: Civil Engineering\nTopic: ' + topic + '\nDifficulty: ' + difficulty + '\nStyle: ' + style + '\nCount: ' + count + '\nLanguage: ' + lang + '\n\n' +
+      'DIFFICULTY: Foundation 15%, Moderate 40%, Challenging 30%, Elite 15%.\n\n' +
+      'QUESTION TYPES: Mix conceptual, application, numerical, statement-based, assertion-type, comparison, engineering situation, IS code based, multi-concept, and elimination questions.\n\n' +
+      'CIVIL RULES\n' +
+      'Use IS 456, IS 800, IS 875, IS 1893, IS 3370, IS 10262, NBC, IRC where relevant.\n' +
+      'Never invent IS code provisions. Calculations must be realistic and concept-testing.\n' +
+      avoid + '\n\n' +
+      'DISTRACTOR RULES\n' +
+      'Every wrong option must be technically believable based on common student mistakes like wrong sign convention, unit error, formula confusion, wrong code interpretation, or partial understanding.\n\n' +
+      'QUALITY AUDIT\n' +
+      'Silently verify: only one correct option, accurate terminology, original question, matches target difficulty. If weak, regenerate.\n\n' +
+      'OUTPUT FORMAT (STRICTLY FOLLOW)\n' +
+      'Do NOT use Markdown. Do NOT use tables. Do NOT write anything outside required sections.\n\n' +
+      'Questions\n\n' +
+      '1. Question Text\n(A) Option\n(B) Option\n(C) Option\n(D) Option\nAnswer: B\n\n' +
+      'Continue until all ' + count + ' questions completed.\n\n' +
+      'Answer Key\n\n1 B\n2 D\n\n' +
+      'One Liner\n\n' +
+      '1.\nConcept: Core engineering concept in 2-5 concise exam-oriented lines.\nWhy Correct: Why the correct option is technically correct (1-2 lines).\nExam Trick: Desi coaching shortcut or elimination insight.\nCommon Trap: Most common student mistake.\nMemory Hook: Short mnemonic or recall trigger.\n\n' +
+      'Repeat for EVERY question.\n\n' +
+      'PARSER RULES\nMandatory headings: Questions, Answer Key, One Liner.\nNumber explanations as 1. 2. 3. Never skip numbering. Never use Markdown.\n\n' +
+      'Generate complete output now.';
+  },
+
+  _buildNonTechPrompt: function(p) {
+    var count = p.count || 10;
+    var exam = p.exam || 'Custom';
+    var subject = p.subject || 'General Studies';
+    var topic = p.topic || 'Mixed';
+    var difficulty = p.difficulty || 'Medium';
+    var style = p.style || 'Mixed';
+    var lang = p.lang || 'English';
+    var avoid = (p.usedTopics && p.usedTopics.length) ? 'Avoid these subtopics: ' + p.usedTopics.join(', ') + '.' : 'Avoid repetitive facts or same-pattern questions.';
+
+    return 'PREPOS NON-TECH MASTER ENGINE v2.0\n\n' +
+      'ROLE\n' +
+      'You are India\'s elite Non-Technical competitive exam paper setter, learning architect, and PYQ intelligence scientist.\n' +
+      'You analysed 100,000+ PYQs across SSC JE, RRB JE, State JE/AE, SSC CGL, railway and government exams.\n' +
+      'You are converting a weak student into exam-ready candidate through intelligent question generation.\n\n' +
+      'TARGET STUDENT\nAssume student is weak in non-tech. Needs concept clarity, exam intelligence, memory improvement.\n\n' +
+      'EXAM TARGET\n' + this._getNonTechExamLine(exam) + '\n\n' +
+      'SUBJECT FOCUS\n' + this._getNonTechSubjectFocus(subject) + '\n\n' +
+      'REQUEST\nExam: ' + exam + '\nSubject: ' + subject + '\nTopic: ' + topic + '\nDifficulty: ' + difficulty + '\nStyle: ' + style + '\nCount: ' + count + '\nLanguage: ' + lang + '\n\n' +
+      'LEARNING PHILOSOPHY\nQ1 teaches, Q2 strengthens, Q3 connects, Q4 challenges, Q5 verifies mastery. Progressive learning throughout.\n\n' +
+      'DIFFICULTY: Foundation 25%, Exam Level 45%, Hard 20%, Advanced 10%.\n\n' +
+      'FACT RULE: Verify every fact, date, year, article. If unsure, reject and regenerate. Never guess.\n\n' +
+      'OPTION ENGINEERING\n' +
+      'Every option must look believable. Wrong options based on common misconceptions, nearby years, nearby Articles, similar terms, timeline confusion, cause-effect confusion.\n' +
+      avoid + '\n\n' +
+      'MEMORY SCIENCE: Connect concepts, compare concepts, build mental associations. No rote memorization.\n\n' +
+      'OUTPUT RULES\n' +
+      'Do NOT use Markdown. Do NOT use tables. Questions in English. One Liner in 100% natural Hinglish coaching-teacher style.\n\n' +
+      'Questions\n\n' +
+      '1. Question Text\n(A) Option\n(B) Option\n(C) Option\n(D) Option\nAnswer: B\n\n' +
+      'Continue until all ' + count + ' questions completed.\n\n' +
+      'Answer Key\n\n1 B\n2 D\n\n' +
+      'One Liner\n\n' +
+      '1.\nConcept: Explain in 2-5 short Hinglish lines for weak student.\nBackground: Why this topic matters in exam.\nWhy Correct: Why correct option is right.\nCommon Trap: Where students usually get trapped.\nExam Trick: One desi coaching style trick.\nMemory Hook: Mnemonic, image, or Hindi keyword for recall.\nPYQ Insight: How this concept appears in SSC JE/RRB JE/State exams (without copying PYQ).\n\n' +
+      'Repeat for EVERY question.\n\n' +
+      'PARSER RULES\nMandatory headings: Questions, Answer Key, One Liner.\nNumber as 1. 2. 3. Never skip. Never use Markdown.\n\n' +
+      'Generate complete output now.';
+  },
   buildChat: function(messages) {
     var system = this._prompts.chat_system.template();
     var ctx = '';
