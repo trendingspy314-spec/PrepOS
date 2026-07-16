@@ -1076,27 +1076,20 @@ var PromptLibrary = {
     };
 
 
-    self._prompts.generate = {
+       self._prompts.generate = {
       v: '4.0', type: 'generate',
       template: function(p) {
         if (self._isCivilSubject(p.subject)) return self._buildCivilPrompt(p);
         if (self._isNonTechSubject(p.subject)) return self._buildNonTechPrompt(p);
         var examPrompts = self._getExamPrompt(p.exam, p.subject);
         return 'Generate exactly ' + (p.count || 10) + ' MCQ questions.\n\n' +
-          'Exam: ' + (p.exam || 'Custom') + '\n' +
-          'Subject: ' + (p.subject || 'General') + '\n' +
+          'Exam: ' + (p.exam || 'Custom') + '\nSubject: ' + (p.subject || 'General') + '\n' +
           (p.topic ? 'Topic: ' + p.topic + '\n' : '') +
-          'Difficulty: ' + (p.difficulty || 'Medium') + '\n' +
-          'Style: ' + (p.style || 'Mixed') + '\n' +
-          'Language: ' + (p.lang || 'English') + '\n\n' +
-          examPrompts + '\n\n' +
-          'STRICT RULES:\n' +
-          '- Exactly ' + (p.count || 10) + ' questions\n' +
-          '- Unique concepts only\n' +
-          '- Authentic exam style\n' +
+          'Difficulty: ' + (p.difficulty || 'Medium') + '\nStyle: ' + (p.style || 'Mixed') + '\n' +
+          'Language: ' + (p.lang || 'English') + '\n\n' + examPrompts + '\n\n' +
+          'STRICT RULES:\n- Exactly ' + (p.count || 10) + ' questions\n- Unique concepts only\n- Authentic exam style\n' +
           (p.usedTopics && p.usedTopics.length ? '- Avoid: ' + p.usedTopics.join(', ') + '\n' : '') +
-          '\nFormat:\n1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\nAnswer: [Letter]\nOne Line Logic: [Brief]\n\n' +
-          'Generate now.';
+          '\nFormat:\n1. [Question]\n(A) [Option]\n(B) [Option]\n(C) [Option]\n(D) [Option]\nAnswer: [Letter]\nOne Line Logic: [Brief]\n\nGenerate now.';
       }
     };
 
