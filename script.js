@@ -2119,7 +2119,25 @@ var ExamEngine = {
   _injectMobilePalette: function() {
     this._removeMobilePalette();
 
+    // ── Fixed Bottom Bar ──
+    var bottomBar = document.createElement('div');
+    bottomBar.id = 'exam-bottom-fixed';
+    bottomBar.className = 'exam-bottom-fixed';
+    bottomBar.innerHTML =
+      '<div class="exam-bottom-grid">' +
+      '<button class="exam-bottom-btn" id="ebb-prev"><span class="ebb-icon">◀</span><span class="ebb-text">Prev</span></button>' +
+      '<button class="exam-bottom-btn ebb-mark" id="ebb-mark"><span class="ebb-icon">☆</span><span class="ebb-text">Mark</span></button>' +
+      '<button class="exam-bottom-btn" id="ebb-next"><span class="ebb-icon">▶</span><span class="ebb-text">Next</span></button>' +
+      '</div>';
+    document.body.appendChild(bottomBar);
 
+    var botNav = U.q('.bottom-nav');
+    if (botNav) botNav.classList.add('exam-active');
+
+    var self2 = this;
+    U.onClick('ebb-prev', function() { self2.prev(); });
+    U.onClick('ebb-next', function() { self2.next(); });
+    U.onClick('ebb-mark', function() { self2.toggleMark(); self2._updateBottomMark(); });
     var fab = document.createElement('button');
     fab.id = 'exam-pal-fab';
     fab.className = 'exam-pal-fab';
@@ -2163,11 +2181,15 @@ var ExamEngine = {
   },
 
 
-  _removeMobilePalette: function() {
+   _removeMobilePalette: function() {
     var fab = U.el('exam-pal-fab');
     if (fab) fab.parentNode.removeChild(fab);
     var ov = U.el('exam-pal-overlay');
     if (ov) ov.parentNode.removeChild(ov);
+    var bb = U.el('exam-bottom-fixed');
+    if (bb) bb.parentNode.removeChild(bb);
+    var botNav = U.q('.bottom-nav');
+    if (botNav) botNav.classList.remove('exam-active');
   },
 
 
@@ -2361,7 +2383,7 @@ var ExamEngine = {
   },
 
 
-  _renderMarkButton: function() {
+   _renderMarkButton: function() {
     if (!this._session) return;
     var q = this._session.questions[this._session.currentIndex];
     var btn = U.el('exam-mark');
@@ -2370,15 +2392,36 @@ var ExamEngine = {
     btn.textContent = marked ? '★ Marked' : '☆ Mark';
     if (marked) btn.classList.add('btn-marked');
     else btn.classList.remove('btn-marked');
+    this._updateBottomMark();
+  },
+
+  _updateBottomMark: function() {
+    if (!this._session) return;
+    var q = this._session.questions[this._session.currentIndex];
+    var btn = U.el('ebb-mark');
+    if (!btn || !q) return;
+    var marked = this._session.marked.indexOf(q.id) !== -1;
+    var icon = btn.querySelector('.ebb-icon');
+    var text = btn.querySelector('.ebb-text');
+    if (icon) icon.textContent = marked ? '★' : '☆';
+    if (text) text.textContent = marked ? 'Marked' : 'Mark';
+    if (marked) btn.classList.add('ebb-marked');
+    else btn.classList.remove('ebb-marked');
   },
 
 
-  _renderNavButtons: function() {
+   _renderNavButtons: function() {
     if (!this._session) return;
+    var isFirst = this._session.currentIndex === 0;
+    var isLast = this._session.currentIndex === this._session.questions.length - 1;
     var prev = U.el('exam-prev');
     var next = U.el('exam-next');
-    if (prev) prev.disabled = this._session.currentIndex === 0;
-    if (next) next.disabled = this._session.currentIndex === this._session.questions.length - 1;
+    if (prev) prev.disabled = isFirst;
+    if (next) next.disabled = isLast;
+    var ePrev = U.el('ebb-prev');
+    var eNext = U.el('ebb-next');
+    if (ePrev) { ePrev.disabled = isFirst; ePrev.style.opacity = isFirst ? '0.4' : '1'; }
+    if (eNext) { eNext.disabled = isLast; eNext.style.opacity = isLast ? '0.4' : '1'; }
   }
 };
 
