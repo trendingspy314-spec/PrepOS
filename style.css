@@ -19,9 +19,9 @@ ul{list-style:none}
 ::selection{background:var(--primary);color:#fff}
 
 
-/* Font Scale */
-.fs-1{--fs:.82}.fs-2{--fs:.88}.fs-3{--fs:.94}.fs-4{--fs:1}.fs-5{--fs:1.06}.fs-6{--fs:1.14}
-body{--fs:.94}
+/* Font Scale — 9 Levels */
+.fs-1{--fs:.72}.fs-2{--fs:.78}.fs-3{--fs:.84}.fs-4{--fs:.90}.fs-5{--fs:.96}.fs-6{--fs:1}.fs-7{--fs:1.08}.fs-8{--fs:1.16}.fs-9{--fs:1.26}
+body{--fs:.90}
 
 
 /* ─── TOKENS (Dark) ─── */
