@@ -5,7 +5,7 @@
 
 'use strict';
 
-var CACHE_NAME = 'prepos-v3-0-0';
+var CACHE_NAME = 'prepos-v3-0-1';
 var STATIC_ASSETS = [
   './',
   './index.html',
